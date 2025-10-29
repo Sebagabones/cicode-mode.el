@@ -107,9 +107,7 @@
 
     ;; strings
     (modify-syntax-entry ?\" "\"" st)
-    (modify-syntax-entry ?' "'" st)
-    (modify-syntax-entry ?/ ". 124b" st)
-    (modify-syntax-entry ?\n ">" st)))
+    (modify-syntax-entry ?' "'" st)))
 
 ;; Add hook for auto-indent after newline
 ;;;###autoload
