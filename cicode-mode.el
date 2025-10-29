@@ -99,16 +99,6 @@
 (defvar font-lock-delimiter-face 'font-lock-delimiter-face
   "Face for brackets, parentheses and other delimiters.")
 
-;; ;;;###autoload
-;; (defvar cicode-mode-syntax-table
-;;   (let ((st (make-syntax-table)))
-;;     (modify-syntax-entry ?\( "()" st)
-;;     (modify-syntax-entry ?\) "((" st)
-;;
-;;     ;; strings
-;;     (modify-syntax-entry ?\" "\"" st)
-;;     (modify-syntax-entry ?' "'" st)))
-
 ;; Add hook for auto-indent after newline
 ;;;###autoload
 (defun cicode-newline-and-indent ()
