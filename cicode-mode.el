@@ -25,9 +25,6 @@
 
 ;; Associate .ci files with cicode-mode
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
-
-;;;###autoload
 (define-derived-mode cicode-mode prog-mode "Cicode"
   "Major mode for editing Cicode files."
 
@@ -91,15 +88,18 @@
                 nil ; SYNTAX-ALIST
                 nil ; SYNTAX-BEGIN
                 )))
-
+;;;###autoload
 ;; Make sure the delimiter face exists if it doesn't already
 (defface font-lock-delimiter-face
   '((t (:foreground "goldenrod")))
   "Face for brackets, parentheses and other delimiters."
   :group 'font-lock-faces)
+
+;;;###autoload
 (defvar font-lock-delimiter-face 'font-lock-delimiter-face
   "Face for brackets, parentheses and other delimiters.")
 
+;;;###autoload
 (defvar cicode-mode-syntax-table
   (let ((st (make-syntax-table)))
     (modify-syntax-entry ?\( "()" st)
@@ -108,10 +108,11 @@
     ;; strings
     (modify-syntax-entry ?\" "\"" st)
     (modify-syntax-entry ?' "'" st)
-    (modify-syntax-entry ?// "<" st)
+    (modify-syntax-entry ?/ ". 124b" st)
     (modify-syntax-entry ?\n ">" st)))
 
 ;; Add hook for auto-indent after newline
+;;;###autoload
 (defun cicode-newline-and-indent ()
   "Insert a newline and indent properly."
   (interactive)
@@ -137,6 +138,7 @@
       (cicode-indent-line))))
 
 ;; Indentation function
+;;;###autoload
 (defun cicode-indent-line ()
   "Indent current line as Cicode code."
   (interactive)
@@ -237,12 +239,15 @@
         (indent-line-to 0)))))
 
 ;; Set up key bindings
+;;;###autoload
 (defun cicode-mode-setup-keys ()
   "Set up the key map for cicode-mode."
   (define-key cicode-mode-map (kbd "RET") 'cicode-newline-and-indent))
 
 (add-hook 'cicode-mode-hook 'cicode-mode-setup-keys)
 
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
 
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here
