@@ -1,0 +1,16 @@
+Cicode-mode is a major mode for Emacs.
+
+I wrote this as my current job involves writing [[https://docs.aveva.com/bundle/plant-scada/page/1130115.html][Cicode]], and the only editor that had some support for it (aside from the, er, terrible built in editor that came with Citect/PlantSCADA) was Notepad++.
+
+As an Emacs user, this would not do, and so I quickly made ~cicode-mode~. It is not particularly good, and any contributions are welcome. Do note that this is my first attempt at making a mode for Emacs, and I do not think that I am very good at elisp.
+
+*** Features
+- There is indentation
+- There is colour
+- There is not much else
+
+*** Known Bugs/Limitations
+- ~SELECT CASE~ indentation is very broken
+- I have not tried to implement support for any of the ~:#~ syntax
+- /Some/ of the inbuilt functions are picked up as inbuilts, but I doubt all of them are.
+- There are a few bugs with the syntax highlighting
