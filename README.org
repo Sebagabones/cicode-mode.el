@@ -12,7 +12,8 @@ Using =use-package=:
 #+end_src
 *** Example:
 [[file:doc/example.png]]
-Or an example using the "recommended" Cicode formatting from [[https://johnwiltshire.com/citect-help/][johnwiltshire.com]]
+
+Or an example using the "recommended" Cicode formatting from [[https://johnwiltshire.com/citect-help/][johnwiltshire.com]]:
 [[file:doc/example2.png]]
 
 *** Features
@@ -23,7 +24,7 @@ Or an example using the "recommended" Cicode formatting from [[https://johnwilts
 *** Known Bugs/Limitations
 - Indentation is not brilliant, please see [[Indentation issues]]
 - ~SELECT CASE~ indentation is very broken
-- ~!~ style comments are not supported (but ~//~ line comments and ~/* */~ block comments are
+- ~!~ style comments are not supported (but ~//~ line comments and ~/* */~ block comments are)
 - I have not tried to implement support for any of the ~:#~ syntax
 - /Some/ of the inbuilt functions are picked up as inbuilts, but I doubt all of them are.
 - There are a few bugs with the syntax highlighting
@@ -33,3 +34,5 @@ Indentation /seems/ to work fine for the suggested format of cicode. That said, 
 
 
 That said, indentation with the style I do does not work perfectly - when creating a function, the first line underneath the function definition does not indent correctly (or at all). I find the best way to work around this is to manually indent this line, and then make a blank line (which also does not indent correctly), and then to start writing the rest of the function (see the first screenshot for an example of what I mean). This method is not perfect, but at least it lends itself well to having a separation between all of the variable initialisation (which all need to be done at the start of the function anyway) and the logic of the function.
+
+I think the issue with the second line inside of the function not indenting also applies to the suggested formatting style.
