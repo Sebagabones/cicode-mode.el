@@ -22,6 +22,12 @@
 
 
 ;;; Code:
+
+;; Associate .ci files with cicode-mode
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
+
+;;;###autoload
 (define-derived-mode cicode-mode prog-mode "Cicode"
   "Major mode for editing Cicode files."
 
@@ -237,8 +243,6 @@
 
 (add-hook 'cicode-mode-hook 'cicode-mode-setup-keys)
 
-;; Associate .ci files with cicode-mode
-(add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
 
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here
