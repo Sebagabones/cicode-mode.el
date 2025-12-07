@@ -239,5 +239,102 @@
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
 
+(require 'json)
+
+(defvar cicode-mode-json-functions-in nil
+  "Loaded hash table of builtin functions from JSON.")
+
+(defvar cicode-hash-table-completion nil
+  "Completion hash table derived from JSON.")
+
+;; Load JSON once
+(let* ((json-object-type 'hash-table)
+       (json-array-type 'list)
+       (json-key-type 'string))
+  (setq cicode-mode-json-functions-in
+        (json-read-file "./src/builtins.json")))
+
+(defun make-function-completion-table (json-table)
+  (let ((tab (make-hash-table :test 'equal)))
+    (maphash
+     (lambda (key val)
+       (puthash (gethash "name" val) val tab))
+     json-table)
+    tab))
+
+(defun cicode-mode-annotation (cand)
+  "Return formatted signature for candidate CAND."
+  (let* ((data (gethash cand cicode-hash-table-completion))
+         (params (gethash "params" data))
+         (return (gethash "returnType" data)))
+    (when data
+      (format "(%s) → %s"
+              (mapconcat #'identity params ", ")
+              return))))
+
+(defun cicode-mode-doc (cand)
+  "Return the docstring for candidate CAND."
+  (let ((data (gethash cand cicode-hash-table-completion)))
+    (gethash "doc" data)))
+
+(defun cicode-mode-load-functions ()
+  (unless cicode-hash-table-completion
+    (setq cicode-hash-table-completion
+          (make-function-completion-table cicode-mode-json-functions-in)))
+  cicode-hash-table-completion)
+
+(defun custom-company-doc-buffer (&optional string)
+  "Modified from company repo. STRING: Formatted string."
+  (with-current-buffer (get-buffer-create "*company-documentation*")
+    (erase-buffer)
+    (fundamental-mode)
+    (when string
+      (save-excursion
+        (insert string)
+        (visual-line-mode)))
+    (current-buffer)))
+
+(defun cicode-mode-doc-params (cand)
+  "Return an alist of parameters for candidate CAND.
+Each element is (PARAM-NAME . DESCRIPTION)."
+  (let* ((data (gethash cand cicode-hash-table-completion))
+         (params (gethash "params" data)))
+    ;; Convert JSON array to alist with empty descriptions for now
+    (mapcar (lambda (p)
+              (cons p
+                    ""))  ;; description empty for now
+            params)))
+
+(defun cicode-doc-buffer (cand)
+  "Return a buffer containing the docstring for CAND."
+
+  (setq functionName (propertize (gethash "name" (gethash cand cicode-hash-table-completion)) 'face 'font-lock-keyword-face 'face 'bold-italic ))
+  (setq returns (propertize (gethash "returnType" (gethash cand cicode-hash-table-completion)) 'face 'font-lock-builtin-face ))
+  (setq docstring (gethash "doc" (gethash cand cicode-hash-table-completion)))
+  (setq params (gethash "params" (gethash cand cicode-hash-table-completion)))
+  (setq paramsString "")
+
+  (dolist (element params)
+    (setq paramsString (concat paramsString (format "%s\n" element))))
+
+  (let ((docs (format "%s\n\nParams:\n%s\nReturns: %s\n%s" functionName paramsString returns docstring)))
+    (when docs
+      (custom-company-doc-buffer docs))))
+
+(defun cicode-mode-capf ()
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (let* ((start (car bounds))
+             (end   (cdr bounds))
+             (collection cicode-hash-table-completion))
+        (list start end collection
+              :exclusive 'no
+              :annotation-function #'cicode-mode-annotation
+              :company-doc-buffer #'cicode-doc-buffer
+              :completion-ignore-case nil)))))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (add-to-list 'completion-at-point-functions #'cicode-mode-capf)))
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here

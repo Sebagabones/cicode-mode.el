@@ -1,0 +1,15 @@
+/*
+Adds 1 to `counter`, unless counter is greater than or equal to 100, in which case it returns 0
+*/
+INT FUNCTION IncCounter(INT Counter)
+    INT IncrementValue;         // TODO: Change IncrementValue to be a parameter
+
+    IncrementValue = 1;
+    IF counter < 100 THEN
+        counter = counter + IncrementValue;
+    ELSE
+        counter = 0;
+    END
+    RETURN counter;
+
+END
