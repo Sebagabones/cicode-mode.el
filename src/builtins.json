@@ -20847,12 +20847,8 @@
         "name": "XMLCreate",
         "params": [
             {
-                "paramdescription": "",
+                "paramdescription": "Root element of the XML document.",
                 "paramname": "sRootElement"
-            },
-            {
-                "paramdescription": "",
-                "paramname": "Root element of the XML document."
             },
             {
                 "paramdescription": "Optional. Namespace URI of root element.",

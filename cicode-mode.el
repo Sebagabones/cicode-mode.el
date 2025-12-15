@@ -19,7 +19,11 @@
 
 ;; Feel free to open an issue (or even better make a contribution)
 ;; I am not good at elisp, and doubt I will be able to improve this package much ;)
-
+;; TODO: Don’t use ~setq~, fix global variables...
+;; TODO: Fix colours (terrible under doom-tokyo-night)
+;; TODO: Add eldoc
+;; TODO: Fix indentation for switch case
+;; Long way away TODO: Tree-sitter
 
 ;;; Code:
 ;;;###autoload
