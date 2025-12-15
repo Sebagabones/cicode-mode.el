@@ -239,6 +239,7 @@
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
 
+
 (require 'json)
 
 (defvar cicode-mode-json-functions-in nil
@@ -254,7 +255,21 @@
   (setq cicode-mode-json-functions-in
         (json-read-file "./src/builtins.json")))
 
-(defun make-function-completion-table (json-table)
+(defun cicode-mode-trim-docstring (docstring)
+  ;; Trims the docstring to a set length
+  (let ((max-length (* 2 (- corfu-popupinfo-max-width 4))))
+    (if (> (length docstring) max-length)
+        (concat (substring docstring 0 (- max-length 3)) "...")
+      docstring)))
+
+(defun cicode-mode-trim-parameter-docstring (max-name-len docstring)
+  ;; Trims the docstring to a set length
+  (let ((max-length (-(* 2 corfu-popupinfo-max-width) (* (+ max-name-len 3) 2))))
+    (if (> (length docstring) max-length)
+        (concat (substring docstring 0 (- max-length 3)) "...")
+      docstring)))
+
+(defun cicode-mode-make-function-completion-table (json-table)
   (let ((tab (make-hash-table :test 'equal)))
     (maphash
      (lambda (key val)
@@ -266,24 +281,22 @@
   "Return formatted signature for candidate CAND."
   (let* ((data (gethash cand cicode-hash-table-completion))
          (params (gethash "params" data))
+         (paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
          (return (gethash "returnType" data)))
     (when data
       (format "(%s) → %s"
-              (mapconcat #'identity params ", ")
+              (mapconcat #'identity paramNames ", ")
               return))))
 
-(defun cicode-mode-doc (cand)
-  "Return the docstring for candidate CAND."
-  (let ((data (gethash cand cicode-hash-table-completion)))
-    (gethash "doc" data)))
 
 (defun cicode-mode-load-functions ()
+  "Loads completion data for cicode"
   (unless cicode-hash-table-completion
     (setq cicode-hash-table-completion
-          (make-function-completion-table cicode-mode-json-functions-in)))
+          (cicode-mode-make-function-completion-table cicode-mode-json-functions-in)))
   cicode-hash-table-completion)
 
-(defun custom-company-doc-buffer (&optional string)
+(defun cicode-mode-custom-company-doc-buffer (&optional string)
   "Modified from company repo. STRING: Formatted string."
   (with-current-buffer (get-buffer-create "*company-documentation*")
     (erase-buffer)
@@ -294,34 +307,49 @@
         (visual-line-mode)))
     (current-buffer)))
 
-(defun cicode-mode-doc-params (cand)
-  "Return an alist of parameters for candidate CAND.
-Each element is (PARAM-NAME . DESCRIPTION)."
-  (let* ((data (gethash cand cicode-hash-table-completion))
-         (params (gethash "params" data)))
-    ;; Convert JSON array to alist with empty descriptions for now
-    (mapcar (lambda (p)
-              (cons p
-                    ""))  ;; description empty for now
-            params)))
+(defun cicode-mode-format-paramstructs-with-indent (structs)
+  "Format a list of paramstruct STRUCTS with aligned descriptions and line wrapping."
+  (let* ((max-name-len (apply #'max (mapcar (lambda (s)
+                                              (length (paramstruct-ParameterName s)))
+                                            structs)))
+         (result ""))
+    (dolist (s structs)
+      (let* ((name (paramstruct-ParameterName s))
+             (desc (cicode-mode-trim-parameter-docstring max-name-len (paramstruct-ParameterDescription s)))
+             ;; compute indent after the colon, based on longest name
+             (indent-col (+ max-name-len 3))
+             (indent (make-string indent-col ?\s))
+             (indentFirstLine (make-string (+ 2 (- max-name-len (length name))) ?\s))
+             ;; replace newlines in description with proper hanging indent
+             (formatted-desc (replace-regexp-in-string "\n" (concat "\n" indent) desc)))
+        (setq result
+              (concat result  " " (propertize name 'face 'font-lock-keyword-face)  ":" indentFirstLine (propertize formatted-desc 'face 'font-lock-doc-markup-face ) "\n"))))
+    result))
 
 (defun cicode-doc-buffer (cand)
   "Return a buffer containing the docstring for CAND."
+  (cl-defstruct paramstruct ParameterName ParameterDescription)
+  (setq data (gethash cand cicode-hash-table-completion))
+  (setq functionName (propertize (gethash "name" data) 'face 'font-lock-keyword-face 'face 'bold-italic ))
+  (setq returns (concat (propertize "Returns: " 'face 'font-lock-builtin-face) (propertize (cicode-mode-trim-docstring (gethash "returnType" data)) 'face 'font-lock-doc-markup-face )))
+  (setq docstring (propertize (cicode-mode-trim-docstring (gethash "doc" data)) 'face 'font-lock-doc-markup-face ))
+  (setq syntax (concat (propertize "Syntax: " 'face 'font-lock-builtin-face) (propertize (gethash "syntax" data) 'face 'font-lock-regexp-grouping-construct )))
 
-  (setq functionName (propertize (gethash "name" (gethash cand cicode-hash-table-completion)) 'face 'font-lock-keyword-face 'face 'bold-italic ))
-  (setq returns (propertize (gethash "returnType" (gethash cand cicode-hash-table-completion)) 'face 'font-lock-builtin-face ))
-  (setq docstring (gethash "doc" (gethash cand cicode-hash-table-completion)))
-  (setq params (gethash "params" (gethash cand cicode-hash-table-completion)))
-  (setq paramsString "")
+  (setq params (gethash "params" data))
+  (setq paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
+  (setq paramDesc (mapcar (lambda (p) (gethash "paramdescription" p)) params))
+  (setq paramsListStruct (cl-mapcar (lambda (name desc) (make-paramstruct :ParameterName name :ParameterDescription desc)) paramNames paramDesc))
 
-  (dolist (element params)
-    (setq paramsString (concat paramsString (format "%s\n" element))))
+  (setq paramsString (concat (propertize "Parameters:\n" 'face 'font-lock-builtin-face) (cicode-mode-format-paramstructs-with-indent paramsListStruct)))
+  ;; (dolist (element paramsListStruct)
+  ;;   (setq paramsString (concat paramsString (format "%s\n" element))))
 
-  (let ((docs (format "%s\n\nParams:\n%s\nReturns: %s\n%s" functionName paramsString returns docstring)))
+  (let ((docs (format "%s\n%s\n%s\n%s\n%s\n" functionName docstring returns syntax paramsString )))
     (when docs
-      (custom-company-doc-buffer docs))))
+      (cicode-mode-custom-company-doc-buffer docs))))
 
 (defun cicode-mode-capf ()
+  (cicode-mode-load-functions)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
       (let* ((start (car bounds))
