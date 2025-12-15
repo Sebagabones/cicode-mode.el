@@ -1,15 +1,16 @@
-;;; cicode-mode.el --- major mode for cicode  -*- lexical-binding: t; -*-
-
+;;; cicode-mode.el --- Major mode for cicode  -*- lexical-binding: t; -*-
 ;; Copyright (C) 2025 Sebastian Gazey
 ;; Author: Sebastian Gazey
 ;; URL: https://github.com/Sebagabones/cicode-mode
 ;; Created: 2025
-;; Version: 0.1
-;; Keywords: cicode citect plant-scada aveva
+;; Version: 0.2
+;; Package-Requires: ((emacs "24.3"))
+;; Keywords: languages cicode citect plant-scada aveva
 
 ;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
+
 ;; A simple major mode for editing Cicode files (from Citect/Plant Scada)
 ;; It is very janky and cursed, I don't understand more than 25% of what is going on with it
 
@@ -32,6 +33,7 @@
 
   ;; Comment syntax
   (setq-local comment-start "// ")
+  (setq-local comment-start "!")
   (setq-local comment-end "")
 
   ;; Syntax table setup
@@ -48,8 +50,7 @@
     :group 'font-lock-faces)
   (defvar cicode-type-face 'cicode-type-face
     "Face for Cicode type declarations with italic style.")
-
-  ;; Enhanced syntax highlighting for Cicode with italic types
+  (add-hook 'completion-at-point-functions #'cicode-mode-capf nil t)
   (setq-local font-lock-defaults
               '((;; Types (with italic style)
                  ("\\<\\(FLOAT\\|INT\\|OBJECT\\|REAL\\|STRING\\)\\>" . cicode-type-face)
@@ -252,6 +253,9 @@
 (defvar cicode-hash-table-completion nil
   "Completion hash table derived from JSON.")
 
+(cl-defstruct cicode-parameterstruct ParameterName ParameterDescription)
+
+
 ;; Load JSON once
 (let* ((json-object-type 'hash-table)
        (json-array-type 'list)
@@ -260,15 +264,8 @@
         (json-read-file "./src/builtins.json")))
 
 (defun cicode-mode-trim-docstring (docstring)
-  ;; Trims the docstring to a set length
-  (let ((max-length (* 2 (- corfu-popupinfo-max-width 4))))
-    (if (> (length docstring) max-length)
-        (concat (substring docstring 0 (- max-length 3)) "...")
-      docstring)))
-
-(defun cicode-mode-trim-parameter-docstring (max-name-len docstring)
-  ;; Trims the docstring to a set length
-  (let ((max-length (-(* 2 corfu-popupinfo-max-width) (* (+ max-name-len 3) 2))))
+  "Trim the DOCSTRING to a set length."
+  (let ((max-length (* 3 (- corfu-popupinfo-max-width 4))))
     (if (> (length docstring) max-length)
         (concat (substring docstring 0 (- max-length 3)) "...")
       docstring)))
@@ -292,9 +289,18 @@
               (mapconcat #'identity paramNames ", ")
               return))))
 
+(defun cicode-mode-find-split-pos (strIn pos)
+  "Find the postion/index to split the string on.
+STRIN: string to search for
+POS: position to search backwards for whitespace from"
+  (let ((currentpos (min pos (1- (length strIn)))))
+    (while (and (>= currentpos 0)
+                (not (member (aref strIn currentpos) '(?\s ?\t ?\n ?\r))))
+      (setq currentpos (1- currentpos)))
+    currentpos))
 
 (defun cicode-mode-load-functions ()
-  "Loads completion data for cicode"
+  "Load completion data for cicode."
   (unless cicode-hash-table-completion
     (setq cicode-hash-table-completion
           (cicode-mode-make-function-completion-table cicode-mode-json-functions-in)))
@@ -311,48 +317,107 @@
         (visual-line-mode)))
     (current-buffer)))
 
-(defun cicode-mode-format-paramstructs-with-indent (structs)
-  "Format a list of paramstruct STRUCTS with aligned descriptions and line wrapping."
-  (let* ((max-name-len (apply #'max (mapcar (lambda (s)
-                                              (length (paramstruct-ParameterName s)))
-                                            structs)))
+;; Older home grown system - was smaller and less in your face, but cicode inbuilts are annoying so went with new implemenetation for more details
+;; (defun cicode-mode-format-cicode-parameterstructs-with-indent (structs)
+;;   "Format a list of cicode-parameterstruct STRUCTS as aligned descriptions and line wrapping."
+;;   (let* ((max-name-len (apply #'max (mapcar (lambda (s)
+;;                                               (length (cicode-parameterstruct-ParameterName s)))
+;;                                             structs)))
+;;          (result ""))
+;;     (dolist (s structs)
+;;       (let* ((name (cicode-parameterstruct-ParameterName s))
+;;              ;; (desc (cicode-mode-trim-parameter-docstring max-name-len (cicode-parameterstruct-ParameterDescription s)))
+;;              (desc  (cicode-parameterstruct-ParameterDescription s))
+;;              ;; compute indent after the colon, based on longest name
+;;              (indent-col (+ max-name-len 3))
+;;              (indent (make-string indent-col ?\s))
+;;              (indentFirstLine (make-string (+ 2 (- max-name-len (length name))) ?\s))
+;;              ;; replace newlines in description with proper hanging indent
+;;              (formatted-desc (replace-regexp-in-string "\n" (concat "\n" indent) desc)))
+;;         (setq result
+;;               (concat result  " " (propertize name 'face 'font-lock-keyword-face)  ":" indentFirstLine (propertize formatted-desc 'face 'font-lock-doc-face ) "\n"))))
+;;     result))
+
+(defun cicode-mode-format-cicode-parameterstructs-with-indent (structs)
+  "Format STRUCTS as aligned descriptions, wrapping lines and indenting properly.
+Respects existing newlines without reprinting the parameter name."
+  (let* ((max-name-len (apply #'max
+                              (mapcar (lambda (s)
+                                        (length (cicode-parameterstruct-ParameterName s)))
+                                      structs)))
+         (max-width corfu-popupinfo-max-width)
          (result ""))
     (dolist (s structs)
-      (let* ((name (paramstruct-ParameterName s))
-             (desc (cicode-mode-trim-parameter-docstring max-name-len (paramstruct-ParameterDescription s)))
-             ;; compute indent after the colon, based on longest name
-             (indent-col (+ max-name-len 3))
-             (indent (make-string indent-col ?\s))
-             (indentFirstLine (make-string (+ 2 (- max-name-len (length name))) ?\s))
-             ;; replace newlines in description with proper hanging indent
-             (formatted-desc (replace-regexp-in-string "\n" (concat "\n" indent) desc)))
-        (setq result
-              (concat result  " " (propertize name 'face 'font-lock-keyword-face)  ":" indentFirstLine (propertize formatted-desc 'face 'font-lock-doc-markup-face ) "\n"))))
+      (let* ((name (cicode-parameterstruct-ParameterName s))
+             (desc (or (cicode-parameterstruct-ParameterDescription s) ""))
+             (first-line-indent (+ 2 (- max-name-len (length name))))
+             (hanging-indent (+ max-name-len 3))
+             (lines (split-string desc "\n"))
+             (first-paragraph-line t))
+        (dolist (line lines)
+          (let* ((words (split-string line " " t))
+                 ;; First line uses name + colon, others use hanging indent
+                 (current-line (if first-paragraph-line
+                                   (concat (propertize name 'face 'font-lock-keyword-face)
+                                           ":"
+                                           (make-string first-line-indent ?\s))
+                                 (make-string hanging-indent ?\s)))
+                 (line-len (length current-line)))
+            (setq first-paragraph-line nil)
+            ;; Process words with wrapping
+            (dolist (w words)
+              (if (> (+ line-len 1 (length w)) max-width)
+                  (progn
+                    (setq result (concat result current-line "\n"))
+                    (setq current-line (concat (make-string hanging-indent ?\s) w))
+                    (setq line-len (+ hanging-indent (length w))))
+                (setq current-line (if (= line-len (if first-paragraph-line
+                                                       (+ (length name) 1 first-line-indent)
+                                                     hanging-indent))
+                                       (concat current-line w)
+                                     (concat current-line " " w)))
+                (setq line-len (+ line-len 1 (length w)))))
+            ;; Append last line of this paragraph
+            (setq result (concat result current-line "\n"))))
+        ;; Add a separator line after this parameter
+        (setq result (concat result
+                             (propertize (make-string max-width ?─)
+                                         'face '(:foreground "gray50"))
+                             "\n"))))
     result))
+
 
 (defun cicode-doc-buffer (cand)
   "Return a buffer containing the docstring for CAND."
-  (cl-defstruct paramstruct ParameterName ParameterDescription)
-  (setq data (gethash cand cicode-hash-table-completion))
-  (setq functionName (propertize (gethash "name" data) 'face 'font-lock-keyword-face 'face 'bold-italic ))
-  (setq returns (concat (propertize "Returns: " 'face 'font-lock-builtin-face) (propertize (cicode-mode-trim-docstring (gethash "returnType" data)) 'face 'font-lock-doc-markup-face )))
-  (setq docstring (propertize (cicode-mode-trim-docstring (gethash "doc" data)) 'face 'font-lock-doc-markup-face ))
-  (setq syntax (concat (propertize "Syntax: " 'face 'font-lock-builtin-face) (propertize (gethash "syntax" data) 'face 'font-lock-regexp-grouping-construct )))
-
-  (setq params (gethash "params" data))
-  (setq paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
-  (setq paramDesc (mapcar (lambda (p) (gethash "paramdescription" p)) params))
-  (setq paramsListStruct (cl-mapcar (lambda (name desc) (make-paramstruct :ParameterName name :ParameterDescription desc)) paramNames paramDesc))
-
-  (setq paramsString (concat (propertize "Parameters:\n" 'face 'font-lock-builtin-face) (cicode-mode-format-paramstructs-with-indent paramsListStruct)))
-  ;; (dolist (element paramsListStruct)
-  ;;   (setq paramsString (concat paramsString (format "%s\n" element))))
-
-  (let ((docs (format "%s\n%s\n%s\n%s\n%s\n" functionName docstring returns syntax paramsString )))
-    (when docs
-      (cicode-mode-custom-company-doc-buffer docs))))
+  (let* ((data (gethash cand cicode-hash-table-completion))
+         (functionName (propertize (gethash "name" data)
+                                   'face 'font-lock-keyword-face
+                                   'face 'bold-italic))
+         (returns (concat (propertize "Returns: " 'face 'font-lock-doc-markup-face)
+                          (propertize (cicode-mode-trim-docstring (gethash "returnType" data))
+                                      'face 'font-lock-doc-face)))
+         (docstring (propertize (cicode-mode-trim-docstring (gethash "doc" data))
+                                'face 'font-lock-doc-face))
+         (syntax (concat (propertize "Syntax: " 'face 'font-lock-doc-markup-face)
+                         (propertize (gethash "syntax" data) 'face 'font-lock-keyword-face)))
+         (params (gethash "params" data))
+         (paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
+         (paramDesc (mapcar (lambda (p) (gethash "paramdescription" p)) params))
+         (paramsListStruct (cl-mapcar
+                            (lambda (name desc)
+                              (make-cicode-parameterstruct
+                               :ParameterName name
+                               :ParameterDescription desc))
+                            paramNames paramDesc))
+         (paramsString (concat (propertize "Parameters:\n" 'face 'font-lock-doc-markup-face)
+                               (cicode-mode-format-cicode-parameterstructs-with-indent
+                                paramsListStruct))))
+    (cicode-mode-custom-company-doc-buffer
+     (format "%s\n%s\n%s\n%s\n%s\n"
+             functionName docstring returns syntax paramsString))))
 
 (defun cicode-mode-capf ()
+  "Capf for Cicpde."
   (cicode-mode-load-functions)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
@@ -365,8 +430,6 @@
               :company-doc-buffer #'cicode-doc-buffer
               :completion-ignore-case nil)))))
 
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (add-to-list 'completion-at-point-functions #'cicode-mode-capf)))
+
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here
