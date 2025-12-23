@@ -1,15 +1,29 @@
-/*
-Adds 1 to `counter`, unless counter is greater than or equal to 100, in which case it returns 0
-*/
-INT FUNCTION IncCounter(INT Counter)
-    INT IncrementValue;         // TODO: Change IncrementValue to be a parameter
+GLOBAL STRING ManifestOfBoats = MapOpen();
 
-    IncrementValue = 1;
-    IF counter < 100 THEN
-        counter = counter + IncrementValue;
-    ELSE
-        counter = 0;
-    END
-    RETURN counter;
-
+/// <summary>
+/// Adds a boat to the boat manifest
+/// </summary>
+/// <param name="BoatID">Boat ID number</param>
+/// <param name="BoatName">Name of boat</param>
+/// <returns>0 for success, otherwise error code (either -1 for incorrect ID number, or MapValueSet error code)</returns>
+PRIVATE INT FUNCTION AddBoatToManifest(INT BoatID, STRING BoatName = "My default boat name includes a quotation ^" mark!")
+    /*
+    NOTE: There may be some underlying flaw here, I wrote this at 2AM
+    */
+    SELECT CASE BoatID
+        CASE 0 TO 9             // BoatID’s cannot be single digits
+            RETURN -1;
+        CASE 11,12              // These are reserved by the Coast Guard
+            IF checkIfBoatIsCoastGuards(BoatID) THEN
+                RETURN MapValueSet(ManifestOfBoats, IntToStr(BoatID), BoatName); // All Coast Guard boat ID’s already exist in manifest, but update the name
+            ELSE
+                RETURN -1;
+            END
+        CASE ELSE
+            IF MapKeyExists(ManifestOfBoats, BoatID) THEN
+                RETURN -1;      // Couldn’t add boat, ID already exists
+            ELSE
+                RETURN MapValueSet(ManifestOfBoats, IntToStr(BoatID), BoatName);
+            END
+    END SELECT
 END
