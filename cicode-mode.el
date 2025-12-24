@@ -237,30 +237,15 @@
 
 (cl-defstruct cicode-parameterstruct ParameterName ParameterDescription)
 
-(defconst cicode-mode--data-dir
-  (expand-file-name "src" (file-name-directory (or load-file-name
-                                                   (bound-and-true-p byte-compile-current-file)
-                                                   buffer-file-name)))
-  "Directory where `cicode-mode` package data files live.")
-
-(defconst cicode-mode-builtin-file
-  (expand-file-name "builtins.json" cicode-mode--data-dir)
-  "Path to the builtins JSON file for `cicode-mode`.")
-
-(defun cicode-mode-load-builtins ()
-  "Load and parse `builtins.json`."
-  (unless (file-exists-p cicode-mode-builtin-file)
-    (error "cicode-mode: builtins.json not found at %s" cicode-mode-builtin-file))
-  (with-temp-buffer
-    (insert-file-contents cicode-mode-builtin-file)
-    (json-parse-buffer :object-type 'hash-table)))
-
+(require 'builtins)
 ;; Load JSON once
 (let* ((json-object-type 'hash-table)
        (json-array-type 'list)
        (json-key-type 'string))
   (setq cicode-mode-json-functions-in
-        (json-read-file cicode-mode-builtin-file)))
+        ;; (json-read-file (expand-file-name builtins.json cicode-mode-base))))
+        (json-parse-string cicode-mode-json-builtins-str)))
+
 
 (defvar cicode-mode-max-docstring-width corfu-popupinfo-max-width
   "The maximum width of a single line of docstring inside of completion popup, defaults to ‘corfu-popupinfo-max-width’.
