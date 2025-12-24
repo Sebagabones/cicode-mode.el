@@ -291,7 +291,7 @@ POS: position to search backwards for whitespace from"
       (setq currentpos (1- currentpos)))
     currentpos))
 
-;;;###autoload
+
 (defun cicode-mode-load-functions ()
   "Load completion data for cicode."
   (unless cicode-hash-table-completion
@@ -426,6 +426,7 @@ Respects existing newlines without reprinting the parameter name."
 
 
 (defun cicode-mode-setup-eldoc ()
+  (cicode-mode-load-functions)
   (setq-local eldoc-documentation-functions
               #'cicode-mode-eldoc-function)
   (eldoc-mode 1))
