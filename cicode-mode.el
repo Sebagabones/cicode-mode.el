@@ -247,9 +247,9 @@
         (json-parse-string cicode-mode-json-builtins-str)))
 
 
-(defvar cicode-mode-max-docstring-width corfu-popupinfo-max-width
-  "The maximum width of a single line of docstring inside of completion popup, defaults to ‘corfu-popupinfo-max-width’.
-If you don’t use corfu, set this to the width of the info popup you use")
+(defvar cicode-mode-max-docstring-width 80
+  "The maximum width of a single line of docstring inside of completion popup, defaults to ‘80’.
+Set this to the width of the info popup you use (i.e. if you use corfu, set this to be ‘corfu-popupinfo-max-width’)")
 
 
 (defvar cicode-mode-max-docstring-length (* 3 (- cicode-mode-max-docstring-width 4))
