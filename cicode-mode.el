@@ -237,7 +237,7 @@
 
 (cl-defstruct cicode-parameterstruct ParameterName ParameterDescription)
 
-(require 'builtins)
+(require 'cicode-mode-builtins)
 ;; Load JSON once
 (let* ((json-object-type 'hash-table)
        (json-array-type 'list)
