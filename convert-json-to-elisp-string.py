@@ -19,7 +19,7 @@ def main(builtinsFile=pathlib.Path("src/builtins.json")):
 (defvar cicode-mode-json-builtins-str {builtins}
   "JSON String of builtin functions")
 
-(provide 'builtins)
+(provide 'cicode-mode-builtins)
 
 ;;; cicode-mode-builtins.el ends here
 """
