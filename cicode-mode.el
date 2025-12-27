@@ -70,7 +70,7 @@
                  ("\\<[0-9]+\\(\\.[0-9]+\\)?\\s-*[eE]\\s-*[+-]?\\s-*[0-9]+\\>" . font-lock-constant-face)
 
                  ;; Keywords
-                 ("\\<\\(AND\\|C\\(?:\\(?:AS\\|ICOD\\)E\\)\\|DO\\|E\\(?:LSE\\|ND\\)\\|F\\(?:OR\\|UNCTION\\)\\|GLOBAL\\|IF\\|MOD\\(?:ULE\\)?\\|NOT\\|OR\\|P\\(?:RIVATE\\|UBLIC\\)\\|RETURN\\|SELECT\\|T\\(?:HEN\\|O\\)\\|WHILE\\)\\>"
+                 ("\\<\\(AND\\|C\\(?:\\(?:AS\\|ICOD\\)E\\)\\|DO\\|E\\(?:LSE\\|ND\\)\\|F\\(?:OR\\|UNCTION\\)\\|GLOBAL\\|IF\\|MOD\\(?:ULE\\)?\\|NOT\\|OR\\|P\\(?:RIVATE\\|UBLIC\\)\\|RETURN\\|SELECT\\|T\\(?:HEN\\|O\\)\\|WHILE\\|IS\\)\\>"
                   . font-lock-keyword-face)
 
                  ;; Function names
