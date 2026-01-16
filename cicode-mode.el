@@ -20,7 +20,6 @@
 
 ;; Feel free to open an issue (or even better make a contribution)
 ;; This is my first emacs package/time writing elisp, so be warned ;)
-;; TODO: Don’t use ~setq~, fix global variables...
 ;; TODO: Add ablity to parse code, and add in :company-location feature, which is used by company to jump to the location of current candidate
 ;; Long way away TODO: Tree-sitter
 
@@ -88,6 +87,10 @@
                  ;; String literals
                  ("\"[^\"]*\"" . font-lock-string-face)
 
+                 (lambda (limit)
+                   (c-font-lock-doc-comments "///" limit cicode-codedoc-font-lock-doc-comments))
+                 (lambda (limit)
+                   (c-font-lock-doc-comments "/\\*\\*" limit cicode-codedoc-font-lock-doc-comments))
                  )
 
 
@@ -95,7 +98,8 @@
                 t   ; CASE-FOLD
                 nil ; SYNTAX-ALIST
                 nil ; SYNTAX-BEGIN
-                )))
+                ))
+  )
 
 (defun cicode-find-matching-opener ()
   "Return the indentation of the matching block opener for the current line."
@@ -442,25 +446,25 @@ Respects existing newlines without reprinting the parameter name."
 
 
 
-(defun cicode-find-enclosing-function ()
-  "Return the first word immediately outside the nearest parentheses."
-  (save-excursion
-    ;; Move backward to nearest '('
-    (when (search-backward "(" nil t)
-      ;; Skip spaces before '('
-      (skip-chars-backward " \t")
-      ;; Now point is just after function name
-      (let ((end (point)))
-        ;; Move backward over word characters
-        (while (and (> (point) (line-beginning-position))
-                    (let ((c (char-before)))
-                      (and c (or (and (>= c ?a) (<= c ?z))
-                                 (and (>= c ?A) (<= c ?Z))
-                                 (and (>= c ?0) (<= c ?9))
-                                 (= c ?_)))))
-          (backward-char))
-        ;; Return the substring from start to end
-        (buffer-substring-no-properties (point) end)))))
+;; (defun cicode-find-enclosing-function ()
+;;   "Return the first word immediately outside the nearest parentheses."
+;;   (save-excursion
+;;     ;; Move backward to nearest '('
+;;     (when (search-backward "(" nil t)
+;;       ;; Skip spaces before '('
+;;       (skip-chars-backward " \t")
+;;       ;; Now point is just after function name
+;;       (let ((end (point)))
+;;         ;; Move backward over word characters
+;;         (while (and (> (point) (line-beginning-position))
+;;                     (let ((c (char-before)))
+;;                       (and c (or (and (>= c ?a) (<= c ?z))
+;;                                  (and (>= c ?A) (<= c ?Z))
+;;                                  (and (>= c ?0) (<= c ?9))
+;;                                  (= c ?_)))))
+;;           (backward-char))
+;;         ;; Return the substring from start to end
+;;         (buffer-substring-no-properties (point) end)))))
 
 
 (defun cicode-mode-format-eldoc-full (name)
@@ -512,10 +516,122 @@ Respects existing newlines without reprinting the parameter name."
     (font-lock-ensure)
     (buffer-string)))
 
-;; Used to create regex from hashtable
+;;; Doc Comments
+(require 'cc-fonts)
+;;; This has been stolen from ‘csharp-mode’
+(defcustom cicode-codedoc-tag-face 'font-lock-doc-markup-face
+  "Face to be used on the codedoc docstring tags.
+
+Should be one of the font lock faces, such as
+`font-lock-variable-name-face' and friends.
+
+Needs to be set before `cicode-mode' is loaded, because of
+compilation and evaluation time conflicts."
+  :type 'symbol)
+
+(defconst cicode-codedoc-font-lock-doc-comments
+  ;; Most of this is taken from the javadoc example, however, we don't use the
+  ;; '@foo' syntax, so I removed that. Supports the XML tags only
+  `((,(concat "</?\\sw"         ; XML tags.
+              "\\("
+              (concat "\\sw\\|\\s \\|[=\n\r*.:]\\|"
+                      "\"[^\"]*\"\\|'[^']*'")
+              "\\)*/?>")
+     0 ,cicode-codedoc-tag-face prepend nil)
+    ;; ("\\([a-zA-Z0-9_]+\\)=" 0 font-lock-variable-name-face prepend nil)
+    ;; ("\".*\"" 0 font-lock-string-face prepend nil)
+    ("&\\(\\sw\\|[.:]\\)+;"     ; XML entities.
+     0 ,cicode-codedoc-tag-face prepend nil)))
+
+;;; End Doc Comments
+
+
+;;; Doc Comment Creation
+(require 'subr-x)
+
+(defun cicode--line-empty-p ()
+  "Return t if the line above point is empty."
+  (save-excursion
+    (forward-line -1)
+    (string-blank-p (thing-at-point 'line t))))
+
+(defun cicode--parse-function-line ()
+  "Parse the current FUNCTION line.
+Returns plist: (:scope :rtype :name :params).
+Each param is a plist (:name :type :default)."
+  (let* ((line (string-trim (thing-at-point 'line t))))
+    ;; Match optional scope + optional return type + FUNCTION + name + params
+    (unless (string-match
+             "^\\s-*\\(.*?\\)\\s-*FUNCTION\\s-+\\(\\w+\\)\\s-*(\\(.*\\))"
+             line)
+      (user-error "Not on a FUNCTION line"))
+
+    (let* ((prefix (string-trim (match-string 1 line)))
+           (name   (match-string 2 line))
+           (raw    (match-string 3 line))
+           (tokens (split-string prefix "\\s-+" t))
+           (scope  (or (car tokens) "PUBLIC"))
+           (rtype  (or (cadr tokens)
+                       (when (= (length tokens) 1) (car tokens))
+                       "VOID"))
+           (params
+            (unless (string-blank-p raw)
+              (mapcar
+               (lambda (p)
+                 ;; Match: TYPE NAME [= defaultValue]
+                 (when (string-match
+                        "^\\s-*\\(\\w+\\)\\s-+\\(\\w+\\)\\(?:\\s-*=\\s-*\\(.*\\)\\)?$"
+                        p)
+                   (list :name (match-string 2 p)
+                         :type (match-string 1 p)
+                         :default (match-string 3 p))))
+               (split-string raw "," t "\\s-*")))))
+      (list :scope scope
+            :rtype rtype
+            :name name
+            :params (delq nil params)))))
+
+(defun cicode--insert-doc (info)
+  "Insert XML doc comment using INFO plist."
+  (insert "/**\n")
+  (insert (format " * <summary functionName=\"%s\">\n" (plist-get info :name)))
+  (insert " * TODO: summary\n")
+  (insert " * </summary>\n")
+  (dolist (p (plist-get info :params))
+    (insert
+     (format
+      " * <param name=\"%s\" type=\"%s\"%s>TODO</param>\n"
+      (plist-get p :name)
+      (plist-get p :type)
+      (if-let ((d (plist-get p :default)))
+          (format " defaultValue='%s'" d)
+        ""))))
+  (insert
+   (format
+    " * <returns returnType=\"%s\" scope=\"%s\">TODO</returns>\n"
+    (plist-get info :rtype)
+    (plist-get info :scope)))
+  (insert " **/\n"))
+
+;;;###autoload
+(defun cicode-doc-generate ()
+  "Insert starred XML doc comment for the Cicode function at point.
+Does nothing if the line above is not empty."
+  (interactive)
+  (save-excursion
+    ;; Anchor on FUNCTION line
+    (re-search-backward "^\\s-*.*\\bFUNCTION\\b")
+    (beginning-of-line)
+    (unless (cicode--line-empty-p)
+      (user-error "Docstring already exists"))
+    (cicode--insert-doc
+     (cicode--parse-function-line))))
+
+
+
+;; HERE: Used to create regex from hashtable
 ;; (defun cicode-mode-get-builtin-functions ()
 ;;   (regexp-opt (ht-map (lambda (key value) (gethash "name" value)) cicode-hash-table-completion) 'symbols))
-
 
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here
