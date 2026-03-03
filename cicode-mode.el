@@ -87,10 +87,10 @@
                  ;; String literals
                  ("\"[^\"]*\"" . font-lock-string-face)
 
-                 (lambda (limit)
-                   (c-font-lock-doc-comments "///" limit cicode-codedoc-font-lock-doc-comments))
-                 (lambda (limit)
-                   (c-font-lock-doc-comments "/\\*\\*" limit cicode-codedoc-font-lock-doc-comments))
+                 ;; (lambda (limit)
+                 ;;   (c-font-lock-doc-comments "///" limit cicode-codedoc-font-lock-doc-comments))
+                 ;; (lambda (limit)
+                 ;;   (c-font-lock-doc-comments "/\\*\\*" limit cicode-codedoc-font-lock-doc-comments))
                  )
 
 
@@ -252,12 +252,13 @@
 
 
 (defvar cicode-mode-max-docstring-width 80
-  "The maximum width of a single line of docstring inside of completion popup, defaults to ‘80’.
+  "The maximum width of a single line of docstring inside of completion popup.
+Defaults to ‘80’.
 Set this to the width of the info popup you use (i.e. if you use corfu, set this to be ‘corfu-popupinfo-max-width’)")
 
 
 (defvar cicode-mode-max-docstring-length (* 3 (- cicode-mode-max-docstring-width 4))
-  "The maximum length of docstring inside of completion")
+  "The maximum length of docstring inside of completion.")
 
 (defun cicode-mode-trim-docstring (docstring)
   "Trim the DOCSTRING to a set length."
@@ -267,6 +268,7 @@ Set this to the width of the info popup you use (i.e. if you use corfu, set this
       docstring)))
 
 (defun cicode-mode-make-function-completion-table (json-table)
+  "Create the completion table from JSON-TABLE."
   (let ((tab (make-hash-table :test 'equal)))
     (maphash
      (lambda (key val)
@@ -430,13 +432,14 @@ Respects existing newlines without reprinting the parameter name."
 
 
 (defun cicode-mode-setup-eldoc ()
+  "Set up eldoc."
   (cicode-mode-load-functions)
   (setq-local eldoc-documentation-functions
               #'cicode-mode-eldoc-function)
   (eldoc-mode 1))
 
 (defun cicode-mode-function-name-at-point ()
-  ;; (or
+  "Get function at point."
   ;; Prefer symbol at point
   (let ((sym (thing-at-point 'symbol t)))
     (when (and sym (cicode-mode-get-function-info sym))
@@ -468,7 +471,7 @@ Respects existing newlines without reprinting the parameter name."
 
 
 (defun cicode-mode-format-eldoc-full (name)
-  "Basically just the same as completion, but with example"
+  "Display the information about NAME in eldoc."
   (let* ((data (gethash name cicode-hash-table-completion))
          (functionName (propertize (gethash "name" data)
                                    'face 'font-lock-keyword-face
@@ -497,10 +500,12 @@ Respects existing newlines without reprinting the parameter name."
             syntax docstring returns paramsString exampleString)))
 
 (defun cicode-mode-get-function-info (name)
+  "Get information about function NAME."
   (gethash name cicode-hash-table-completion))
 
 
 (defun cicode-mode-eldoc-function (&rest _ignored)
+  "Populate eldoc."
   (let* ((fname (cicode-mode-function-name-at-point))
          (info  (and fname
                      (gethash fname cicode-hash-table-completion))))
@@ -515,35 +520,6 @@ Respects existing newlines without reprinting the parameter name."
     (insert string)
     (font-lock-ensure)
     (buffer-string)))
-
-;;; Doc Comments
-(require 'cc-fonts)
-;;; This has been stolen from ‘csharp-mode’
-(defcustom cicode-codedoc-tag-face 'font-lock-doc-markup-face
-  "Face to be used on the codedoc docstring tags.
-
-Should be one of the font lock faces, such as
-`font-lock-variable-name-face' and friends.
-
-Needs to be set before `cicode-mode' is loaded, because of
-compilation and evaluation time conflicts."
-  :type 'symbol)
-
-(defconst cicode-codedoc-font-lock-doc-comments
-  ;; Most of this is taken from the javadoc example, however, we don't use the
-  ;; '@foo' syntax, so I removed that. Supports the XML tags only
-  `((,(concat "</?\\sw"         ; XML tags.
-              "\\("
-              (concat "\\sw\\|\\s \\|[=\n\r*.:]\\|"
-                      "\"[^\"]*\"\\|'[^']*'")
-              "\\)*/?>")
-     0 ,cicode-codedoc-tag-face prepend nil)
-    ;; ("\\([a-zA-Z0-9_]+\\)=" 0 font-lock-variable-name-face prepend nil)
-    ;; ("\".*\"" 0 font-lock-string-face prepend nil)
-    ("&\\(\\sw\\|[.:]\\)+;"     ; XML entities.
-     0 ,cicode-codedoc-tag-face prepend nil)))
-
-;;; End Doc Comments
 
 
 ;;; Doc Comment Creation
@@ -591,27 +567,43 @@ Each param is a plist (:name :type :default)."
             :name name
             :params (delq nil params)))))
 
+(defun cicode--read-string-or-default (prompt default-if-empty)
+  (let ((input (read-string prompt)))
+    (if (string-empty-p input)
+        default-if-empty
+      input)))
+
 (defun cicode--insert-doc (info)
-  "Insert XML doc comment using INFO plist."
+  "Insert doxygen doc comment using INFO plist."
   (insert "/**\n")
-  (insert (format " * <summary functionName=\"%s\">\n" (plist-get info :name)))
-  (insert " * TODO: summary\n")
-  (insert " * </summary>\n")
+  ;; (insert (format " * <summary functionName=\"%s\">\n" (plist-get info :name)))
+
+  (insert (format  " * @brief %s\n" (cicode--read-string-or-default  "Function summary: " "TODO: summary")))
+  ;; (insert " * </summary>\n")
+  (insert " * \n")
   (dolist (p (plist-get info :params))
     (insert
      (format
-      " * <param name=\"%s\" type=\"%s\"%s>TODO</param>\n"
+      ;; " * <param name=\"%s\" type=\"%s\"%s>TODO</param>\n"
+      " * @param %s %s\n"
       (plist-get p :name)
-      (plist-get p :type)
-      (if-let ((d (plist-get p :default)))
-          (format " defaultValue='%s'" d)
-        ""))))
-  (insert
-   (format
-    " * <returns returnType=\"%s\" scope=\"%s\">TODO</returns>\n"
-    (plist-get info :rtype)
-    (plist-get info :scope)))
-  (insert " **/\n"))
+      (cicode--read-string-or-default  (format "Description of %s: " (plist-get p :name) ) "TODO: parameter description")
+      ;; (plist-get p :type)
+      ;; (if-let ((d (plist-get p :default)))
+      ;;     (format " defaultValue='%s'" d)
+      ;;   ""))))
+      )))
+  (insert " * \n")
+  (if (string= (plist-get info :rtype) "VOID")(insert " */\n")
+    (insert
+     (format
+      ;; " * <returns returnType=\"%s\" scope=\"%s\">TODO</returns>\n"
+      " * @return %s \n"
+      (cicode--read-string-or-default  "Description of return: " "TODO: Return description")
+      ;; (plist-get info :rtype)
+      ;; (plist-get info :scope)))
+      ))
+    (insert " */\n")))
 
 ;;;###autoload
 (defun cicode-doc-generate ()

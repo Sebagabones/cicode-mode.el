@@ -1,11 +1,13 @@
 GLOBAL STRING ManifestOfBoats = MapOpen();
 
-/// <summary>
-/// Adds a boat to the boat manifest
-/// </summary>
-/// <param name="BoatID">Boat ID number</param>
-/// <param name="BoatName">Name of boat</param>
-/// <returns>0 for success, otherwise error code (either -1 for incorrect ID number, or MapValueSet error code)</returns>
+/**
+ * @brief Adds a boat to the boat manifest
+ *
+ * @param BoatID Boat ID Number
+ * @param BoatName Name of boat
+ *
+ * @return 0 for success, otherwise error code (either -1 for incorrect ID number, or MapValueSet error code)
+ */
 PRIVATE INT FUNCTION AddBoatToManifest(INT BoatID, STRING BoatName = "My default boat name includes a quotation ^" mark!")
     /*
     NOTE: There may be some underlying flaw here, I wrote this at 2AM
