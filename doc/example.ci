@@ -1,25 +1,26 @@
-GLOBAL STRING ManifestOfBoats = MapOpen();
+GLOBAL STRING ManifestOfBoats = MapOpen(); /**< A map that contains a manifest of registered boats*/
 
 /**
- * @brief Adds a boat to the boat manifest
+ * @brief Adds a boat to the boat manifest `ManifestOfBoats`
  *
  * @param BoatID Boat ID Number
  * @param BoatName Name of boat
  *
  * @return 0 for success, otherwise error code (either -1 for incorrect ID number, or MapValueSet error code)
  */
-PRIVATE INT FUNCTION AddBoatToManifest(INT BoatID, STRING BoatName = "My default boat name includes a quotation ^" mark!")
+PUBLIC INT FUNCTION AddBoatToManifest(INT BoatID, STRING BoatName = "a_creative_default_boat_name")
     /*
     NOTE: There may be some underlying flaw here, I wrote this at 2AM
     */
+    IF BoatID < 10 THEN // BoatID’s cannot be single digits or negative numbers
+        RETURN -1;
+    END
     SELECT CASE BoatID
-        CASE 0 TO 9             // BoatID’s cannot be single digits
-            RETURN -1;
         CASE 11,12              // These are reserved by the Coast Guard
-            IF checkIfBoatIsCoastGuards(BoatID) THEN
+            IF CheckCGBoatName(BoatName) THEN
                 RETURN MapValueSet(ManifestOfBoats, IntToStr(BoatID), BoatName); // All Coast Guard boat ID’s already exist in manifest, but update the name
             ELSE
-                RETURN -1;
+                RETURN -1;      // Invalid name for Coast Guard boat
             END
         CASE ELSE
             IF MapKeyExists(ManifestOfBoats, BoatID) THEN
@@ -28,4 +29,21 @@ PRIVATE INT FUNCTION AddBoatToManifest(INT BoatID, STRING BoatName = "My default
                 RETURN MapValueSet(ManifestOfBoats, IntToStr(BoatID), BoatName);
             END
     END SELECT
+END
+
+
+/**
+ * @brief Validates Coast Guard boat names
+ *
+ * @param BoatName Name of the boat to validate
+ *
+ * @return 1 if valid GC name, otherwise 0
+ */
+PRIVATE INT FUNCTION CheckCGBoatName(STRING BoatName)
+    // Coast Guard boat names /must/ start with "CG_"
+    IF StrLeft(BoatName, 3) = "CG_" THEN
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END
 END

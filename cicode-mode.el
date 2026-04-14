@@ -77,7 +77,7 @@
                  ;; Operators and delimiters
                  ("\\(\\+=\\|-=\\|\\*=\\|/=\\|%=\\|&=\\|\\^=\\||=\\|<<\\|>>\\|==\\|!=\\|<=\\|>=\\|<\\|>\\|=\\|\\+\\|-\\|\\*\\|/\\|%\\|&\\|\\^\\||\\)" . font-lock-preprocessor-face)
 
-                 ;; Built-in Functions
+                 ;; Syntax highlighting for built-in Functions
                  ("\\_<\\(A\\(?:bs\\|cc\\(?:Control\\|umBrowse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\)\\|l\\(?:arm\\(?:Ac\\(?:k\\(?:Rec\\|Tag\\|_CIREF\\)\\|tive_CIREF\\)\\|C\\(?:atGetFormat\\|lear\\(?:Rec\\|Tag\\)?\\|o\\(?:mment\\(?:RecID\\)?\\|unt\\(?:\\(?:Equipmen\\|Lis\\)t\\)?\\)\\)\\|D\\(?:elete\\|isable\\(?:Rec\\|Tag\\)?\\|sp\\(?:Cluster\\(?:Add\\|\\(?:InUs\\|Remov\\)e\\)\\|Last\\|Next\\|Prev\\)?\\)\\|E\\(?:nable\\(?:Rec\\|Tag\\)?\\|ventQue_CIREF\\)\\|Fi\\(?:lter\\(?:Close\\|Edit\\(?:Append\\(?:Equipment\\)?\\|C\\(?:lose\\|ommit\\)\\|First\\|HasField\\|Last\\|Next\\|Open\\|Prev\\|Set\\)\\|Form\\|Open\\)\\|rst\\(?:\\(?:Cat\\|Pri\\|Tag\\)Rec\\)\\)\\|Get\\(?:D\\(?:elay\\(?:Rec\\)?\\|sp\\)\\|Fi\\(?:eldRec\\|lterName\\)\\|Info\\|OrderbyKey\\|Threshold\\(?:Rec\\)?\\)\\|H\\(?:elp\\|ighestPriority\\)\\|List\\(?:Create\\|D\\(?:\\(?:estro\\|ispla\\)y\\)\\|Fill\\)\\|N\\(?:ext\\(?:\\(?:Cat\\|Pri\\|Tag\\)Rec\\)\\|otifyVarChange\\)\\|Query\\(?:\\(?:Firs\\|Nex\\)tRec\\)\\|ResetQuery\\|S\\(?:et\\(?:Delay\\(?:Rec\\)?\\|Info\\|Threshold\\(?:Rec\\)?\\)\\|plit\\|um\\(?:Append\\|Commit\\|Delete\\|Fi\\(?:nd\\|rst\\)\\|Get\\|Last\\|Next\\|Prev\\|S\\(?:\\(?:e\\|pli\\)t\\)\\|Type\\)\\)\\|TagFromEquipment\\)\\|m\\(?:Browse\\(?:Ack\\|Close\\|Disable\\|Enable\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|Summary\\(?:Ack\\|C\\(?:l\\(?:ear\\|ose\\)\\|ommit\\)\\|D\\(?:elete\\(?:All\\)?\\|isable\\)\\|Enable\\|First\\|GetField\\|Last\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\|SetFieldValue\\)\\|Tags\\(?:Ack\\|Cl\\(?:ear\\|ose\\)\\|Disable\\|Enable\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\)\\)\\|nByName\\|r\\(?:c\\(?:Cos\\|\\(?:Si\\|Ta\\)n\\)\\|eaCheck\\|ray\\(?:C\\(?:opy\\|reate\\(?:ByAn\\)?\\)\\|Destroy\\(?:ByAn\\)?\\|Exists\\(?:ByAn\\)?\\|FillFromAlarmDataByAn\\|Get\\(?:ArrayByAn\\|In\\(?:fo\\|t\\(?:ByAn\\)?\\)\\|MapName\\(?:ByAn\\)?\\|String\\(?:ByAn\\)?\\)\\|IsDirty\\|S\\(?:et\\(?:I\\(?:nt\\(?:ByAn\\)?\\|sDirty\\)\\|String\\(?:ByAn\\)?\\)\\|wap\\)\\)\\)\\|ss\\(?:Chain\\(?:P\\(?:age\\|opUp\\)\\|Win\\(?:Free\\)?\\)?\\|Equip\\(?:\\(?:Parameter\\|Reference\\)s\\)\\|Get\\(?:Property\\|Scale\\)\\|Info\\(?:Ex\\)?\\|Metadata\\(?:P\\(?:age\\|opUp\\)\\|Win\\)?\\|P\\(?:age\\|opUp\\)\\|ScaleStr\\|T\\(?:ag\\|itle\\)\\|VarTags\\|Win\\(?:Replace\\)?\\|ert\\)?\\)\\|Beep\\|C\\(?:allEvent\\|ha\\(?:inEvent\\|rToStr\\)\\|itectInfo\\|l\\(?:ip\\(?:Copy\\|Paste\\|ReadLn\\|SetMode\\|WriteLn\\)\\|uster\\(?:Activate\\|Deactivate\\|First\\|GetName\\|IsActive\\|Next\\|S\\(?:e\\(?:rverTypes\\|tName\\)\\|tatus\\|wapActive\\)\\)\\)\\|o\\(?:de\\(?:\\(?:SetMod\\|Trac\\)e\\)\\|m\\(?:Close\\|Open\\|Re\\(?:ad\\|set\\)\\|Write\\)\\|s\\)\\|reate\\(?:\\(?:Control\\)?Object\\)\\)\\|D\\(?:DE\\(?:Exec\\|Post\\|Read\\|Write\\|h\\(?:Execute\\|GetLastError\\|Initiate\\|Poke\\|Re\\(?:adLn\\|quest\\)\\|SetMode\\|Terminate\\|WriteLn\\)\\)\\|LL\\(?:C\\(?:all\\(?:Ex\\)?\\|lose\\)\\|Open\\)\\|ate\\(?:Add\\|Day\\|Info\\|Month\\|Sub\\|WeekDay\\|Year\\|_CIREF\\)\\|e\\(?:bug\\(?:Break\\|Msg\\(?:Set\\)?\\)\\|gToRad\\|layShutdown\\|v\\(?:Append\\|C\\(?:lose\\|ontrol\\|urr\\)\\|D\\(?:\\(?:elet\\|isabl\\)e\\)\\|EOF\\|F\\(?:i\\(?:nd\\|rst\\)\\|lush\\)\\|GetField\\|History\\|Info\\|Modify\\|Next\\|Open\\|Pr\\(?:ev\\|int\\)\\|Re\\(?:ad\\(?:Ln\\)?\\|cNo\\)\\|S\\(?:e\\(?:ek\\|tField\\)\\|ize\\)\\|Write\\(?:Ln\\)?\\|Zap\\)\\)\\|isplayRuntimeManager\\|llClass\\(?:C\\(?:allMethod\\|reate\\)\\|Dispose\\|GetProperty\\|IsValid\\|SetProperty\\)\\|riverInfo\\|sp\\(?:A\\(?:n\\(?:CreateControlObject\\|Free\\|Get\\(?:Area\\|Metadata\\(?:At\\)?\\|P\\(?:os\\|rivilege\\)\\)\\|In\\(?:Rgn\\|fo\\)\\|Move\\(?:Rel\\)?\\|New\\(?:Rel\\)?\\|Set\\(?:Metadata\\(?:At\\)?\\|Name\\)\\)\\|rrayByAn\\)\\|B\\(?:ar\\|mp\\|utton\\(?:Fn\\)?\\)\\|C\\(?:hart\\|learClip\\|ol\\)\\|D\\(?:el\\(?:ayRender\\(?:Begin\\|End\\)\\)?\\|irty\\)\\|Error\\|F\\(?:ile\\(?:Get\\(?:Info\\|Name\\)\\|S\\(?:croll\\|etName\\)\\)?\\|ont\\(?:Hnd\\)?\\|ullScreen\\)\\|G\\(?:et\\(?:An\\(?:Bottom\\|Cur\\|Extent\\|F\\(?:irst\\|rom\\(?:Name\\(?:Relative\\)?\\|Point\\)\\)\\|Height\\|Left\\|Next\\|R\\(?:\\(?:awExten\\|igh\\)t\\)\\|Top\\|Width\\)\\|Env\\|M\\(?:etadataFromName\\(?:Relative\\)?\\|ouse\\(?:Over\\)?\\)\\|N\\(?:\\(?:ameFrom\\|earest\\)An\\)\\|ParentAn\\|Slider\\|Tip\\)\\|rayButton\\)\\|I\\(?:nfo\\(?:Destroy\\|Field\\|New\\|Valid\\)?\\|sButtonGray\\)\\|Kernel\\|M\\(?:CI\\|arker\\(?:Move\\|New\\)\\)\\|P\\(?:laySound\\|opup\\(?:\\(?:Config\\)?Menu\\)\\)\\|R\\(?:ichText\\(?:E\\(?:dit\\|nable\\)\\|GetInfo\\|Load\\|P\\(?:gScroll\\|rint\\)\\|S\\(?:ave\\|croll\\)\\)?\\|ub\\(?:End\\|Move\\|S\\(?:etC\\(?:lip\\|olor\\)\\|tart\\)\\)\\)\\|S\\(?:et\\(?:C\\(?:lip\\|urColor\\)\\|MetadataFromName\\(?:Relative\\)?\\|PopupMenuFont\\|Slider\\|T\\(?:ip\\|ooltipFont\\)\\)\\|t\\(?:atus\\|r\\)\\|ym\\(?:A\\(?:nm\\(?:Ex\\)?\\|tSize\\)\\)?\\)\\|T\\(?:ext\\|ipMode\\|rend\\(?:Info\\)?\\)\\|WebContent\\(?:[GS]etURL\\)\\)\\|umpKernel\\)\\|E\\(?:n\\(?:gToGeneric\\|terCriticalSection\\)\\|quip\\(?:Browse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|CheckUpdate\\|GetP\\(?:aram\\|roperty\\)\\|RefBrowse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|S\\(?:etProperty\\|tateBrowse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\)\\)\\|rr\\(?:Com\\|Drv\\|GetHw\\|Help\\|Info\\|Log\\|Msg\\|Set\\(?:Hw\\|Level\\)?\\|Trap\\)\\|x\\(?:ec\\(?:uteDTSPkg\\)?\\|p\\)\\)\\|F\\(?:act\\|ile\\(?:C\\(?:lose\\|opy\\)\\|Delete\\|E\\(?:OF\\|xist\\)\\|Find\\(?:Close\\)?\\|GetTime\\|MakePath\\|Open\\|Print\\|R\\(?:e\\(?:ad\\(?:Block\\|Ln\\)?\\|name\\)\\|ichTextPrint\\)\\|S\\(?:e\\(?:ek\\|tTime\\)\\|ize\\|plitPath\\)\\|Write\\(?:Block\\|Ln\\)?\\)\\|mt\\(?:Close\\|FieldHnd\\|GetField\\(?:Count\\|Hnd\\|Name\\|Width\\)?\\|Open\\|SetField\\(?:Hnd\\)?\\|ToStr\\)\\|orm\\(?:A\\(?:ctive\\|ddList\\)\\|Button\\|C\\(?:heckBox\\|omboBox\\|urr\\)\\|Destroy\\|Edit\\|Field\\|G\\(?:et\\(?:CurrInst\\|Data\\|\\(?:Ins\\|Tex\\)t\\)\\|oto\\|roupBox\\)\\|Input\\|List\\(?:AddText\\|Box\\|\\(?:Delete\\|Select\\)Text\\)\\|N\\(?:ew\\|umPad\\)\\|OpenFile\\|P\\(?:assword\\|osition\\|rompt\\)\\|R\\(?:adioButton\\|ead\\)\\|S\\(?:aveAsFile\\|e\\(?:curePassword\\|lectPrinter\\|t\\(?:Data\\|\\(?:Ins\\|Tex\\)t\\)\\)\\)\\|WndHnd\\)\\|u\\(?:llName\\|zzy\\(?:Close\\|Get\\(?:\\(?:Code\\|Shell\\)Value\\)\\|Open\\|\\(?:Set\\(?:\\(?:Code\\|Shell\\)Valu\\)\\|Trac\\)e\\)\\)\\)\\|G\\(?:et\\(?:Area\\|BlueValue\\|E\\(?:nv\\|vent\\)\\|GreenValue\\|L\\(?:anguage\\|ogging\\)\\|Priv\\|\\(?:RedValu\\|WinTitl\\)e\\)\\|rp\\(?:Close\\|Delete\\|First\\|In\\(?:sert\\)?\\|Math\\|N\\(?:ame\\|ext\\)\\|Open\\|ToStr\\)\\)\\|H\\(?:alt\\|exToStr\\|igh\\(?:Byte\\|Word\\)\\|wAlarmQue\\)\\|I\\(?:ODevice\\(?:Control\\|Info\\|Stats\\)\\|n\\(?:foForm\\(?:An\\)?\\|put\\|tTo\\(?:Real\\|Str\\)\\)\\|sError\\)\\|Ke\\(?:r\\(?:Cmd\\|nel\\(?:QueueLength\\|TableI\\(?:nfo\\|temCount\\)\\)\\)\\|y\\(?:AllowCursor\\|Bs\\|Down\\|Get\\(?:Cursor\\)?\\|Left\\|Move\\|P\\(?:eek\\|ut\\(?:Str\\)?\\)\\|R\\(?:eplay\\(?:All\\)?\\|ight\\)\\|Set\\(?:Cursor\\|Seq\\)\\|Up\\)\\)\\|L\\(?:anguageFileTranslate\\|eaveCriticalSection\\|ibAlarmFilterForm\\|n\\|o\\(?:g\\(?:in\\(?:Form\\)?\\|out\\(?:Idle\\)?\\)?\\|w\\(?:Byte\\|Word\\)\\)\\)\\|M\\(?:a\\(?:il\\(?:Error\\|Logo\\(?:ff\\|n\\)\\|\\(?:Rea\\|Sen\\)d\\)\\|keColour\\|p\\(?:Cl\\(?:ear\\|ose\\)\\|Exists\\|Key\\(?:Count\\|Delete\\|Exists\\|\\(?:Firs\\|Nex\\)t\\)\\|Open\\|Value\\(?:Get\\|Set\\(?:Quality\\)?\\)\\)\\|x\\)\\|e\\(?:nu\\(?:Get\\(?:Child\\|FirstChild\\|GenericNode\\|N\\(?:extChild\\|odeByPath\\)\\|P\\(?:a\\(?:geNode\\|rent\\)\\|revChild\\)\\|WindowNode\\)\\|Node\\(?:AddChild\\|Get\\(?:Curr\\|Depth\\|Expanded\\|Property\\|TargetPage\\)\\|HasCommand\\|Is\\(?:Disabled\\|Hidden\\)\\|R\\(?:emove\\|unCommand\\)\\|Set\\(?:DisabledWhen\\|Expanded\\|HiddenWhen\\|Property\\)\\)\\|Reload\\)\\|ssage\\)\\|in\\|sg\\(?:Brdcst\\|Close\\|GetCurr\\|Open\\|R\\(?:PC\\|ead\\)\\|\\(?:Sta\\|Wri\\)te\\)\\|ulti\\(?:MonitorStart\\|Signature\\(?:Form\\|TagWrite\\)\\)\\)\\|Name\\|O\\(?:LEDateToTime\\|bject\\(?:Associate\\(?:Events\\|PropertyWithTag\\)\\|ByName\\|HasInterface\\|IsValid\\|ToStr\\)\\|nEvent\\)\\|P\\(?:a\\(?:ckedRGB\\(?:ToCitectColour\\)?\\|ge\\(?:Alarm_CIREF\\|Back\\|Dis\\(?:abled\\|play\\)\\|Exists\\|F\\(?:ile\\(?:Info\\(?:Ex\\)?\\)?\\|orward\\)\\|G\\(?:et\\(?:Int\\|Str\\)\\|oto\\)\\|H\\(?:ardware\\|istory\\(?:DspMenu\\|Empty\\)\\|ome\\)\\|Info\\|KeyboardCommandsPut\\|L\\(?:ast\\|ist\\(?:C\\(?:\\(?:ou\\|urre\\)nt\\)\\|D\\(?:elete\\|isplay\\)\\|Info\\)\\)\\|Menu\\|Next\\|P\\(?:eek\\(?:\\(?:Curren\\|Las\\)t\\)\\|op\\(?:Last\\|Up\\)\\|r\\(?:ev\\|ocessAnalyst\\(?:Pens\\)?\\)\\|ushLast\\)\\|R\\(?:ecall\\|ichTextFile\\)\\|S\\(?:OE\\|e\\(?:lect\\|t\\(?:Int\\|Str\\)\\)\\|ummary\\)\\|T\\(?:ask\\|r\\(?:ansformCoords\\|end\\(?:Ex\\)?\\)\\)\\)\\|rameter\\(?:\\(?:Ge\\|Pu\\)t\\)\\|thToStr\\)\\|i\\|lot\\(?:Close\\|Draw\\|G\\(?:etMarker\\|rid\\)\\|Info\\|Line\\|Marker\\|Open\\|S\\(?:\\(?:cale\\|et\\)Marker\\)\\|Text\\|XYLine\\)\\|ow\\|r\\(?:int\\(?:Font\\|Ln\\)?\\|o\\(?:cess\\(?:Analyst\\(?:LoadFile\\|PopUp\\|Se\\(?:lect\\|tPen\\)\\|Win\\)\\|Is\\(?:Client\\|Server\\)\\|Restart\\)\\|ductInfo\\|ject\\(?:Info\\|Restart\\(?:[GS]et\\)\\)\\|mpt\\)\\)\\|ulse\\)\\|Qu\\(?:ality\\(?:Create\\|GetPart\\|Is\\(?:Bad\\|ControlInhibit\\|Good\\|Override\\|Uncertain\\)\\|SetPart\\|ToStr\\)\\|e\\(?:Close\\|Length\\|Open\\|Peek\\|Read\\|Write\\)\\)\\|R\\(?:a\\(?:dToDeg\\|nd\\)\\|e\\(?:Read\\|alToStr\\|p\\(?:GetC\\(?:luster\\|ontrol\\)\\|SetControl\\|ort\\)\\|setScreenProfile\\)\\|ound\\)\\|S\\(?:OE\\(?:Archive\\|Dismount\\|EventAdd\\|Mount\\)\\|PC\\(?:Alarms\\|ClientInfo\\|Get\\(?:\\(?:Histogram\\|Subgroup\\)Table\\)\\|\\(?:P\\(?:lo\\|rocessXRS\\(?:[GS]e\\)\\)\\|S\\(?:etLimi\\|\\(?:pecLimit[GS]\\|ubgroupSize[GS]\\)e\\)\\)t\\)\\|QL\\(?:Append\\|BeginTran\\|C\\(?:a\\(?:\\(?:l\\|nce\\)l\\)\\|lose\\|o\\(?:\\(?:mmi\\|nnec\\)t\\)\\|reate\\)\\|Dis\\(?:connect\\|pose\\)\\|E\\(?:nd\\|rrMsg\\|xec\\)\\|FieldInfo\\|Get\\(?:Field\\|Recordset\\|Scalar\\)\\|I\\(?:nfo\\|sNullField\\)\\|N\\(?:ext\\|oFields\\|um\\(?:Change\\|Fields\\)\\)\\|Open\\|P\\(?:arams\\(?:ClearAll\\|SetAs\\(?:Int\\|Real\\|String\\)\\)\\|rev\\)\\|Query\\(?:\\(?:Creat\\|Dispos\\)e\\)\\|Ro\\(?:llBack\\|wCount\\)\\|Set\\|TraceO\\(?:ff\\|n\\)\\)\\|ch\\(?:d\\(?:C\\(?:lose\\|onfig\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\)\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\|Special\\(?:Add\\|Close\\|Delete\\|First\\|GetField\\|Item\\(?:Add\\(?:Range\\)?\\|Close\\|Delete\\(?:Range\\)?\\|First\\|GetField\\|Modify\\(?:Range\\)?\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|Modify\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\)\\|eduleItem\\(?:Add\\|Delete\\|Modify\\|SetRepeat\\)\\)\\|e\\(?:m\\(?:Close\\|Open\\|Signal\\|Wait\\)\\|ndKeys\\|r\\(?:ialKey\\|v\\(?:er\\(?:Browse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|DumpKernel\\|GetProperty\\|I\\(?:nfo\\(?:Ex\\)?\\|sOnline\\)\\|R\\(?:PC\\|e\\(?:load\\|start\\)\\)\\)\\|iceGetList\\)\\)\\|t\\(?:Area\\|Event\\|Logging\\)\\)\\|hutdown\\(?:Form\\|Mode\\)?\\|i\\(?:g?n\\)\\|leep\\(?:MS\\)?\\|qrt\\|tr\\(?:C\\(?:alcWidth\\|lean\\)\\|EndsWith\\|F\\(?:ill\\|ormat\\)\\|GetChar\\|L\\(?:e\\(?:ft\\|ngth\\)\\|istContainsItem\\|ower\\)\\|Mid\\|Pad\\|R\\(?:eplace\\|ight\\)\\|S\\(?:e\\(?:arch\\|tChar\\)\\|plit\\)\\|T\\(?:o\\(?:Bool\\|Char\\|Date\\|Fmt\\|Grp\\|Hex\\|Int\\|L\\(?:ines\\|ocalText\\)\\|Period\\|Real\\|Time\\(?:stamp\\)?\\|Value\\)\\|r\\(?:im\\|uncFont\\(?:Hnd\\|Tooltip\\)?\\)\\)\\|Upper\\|Word\\)\\|ubscription\\(?:AddCallback\\|Get\\(?:Attribute\\|Info\\|Quality\\|T\\(?:ag\\|imestamp\\)\\|Value\\)\\|RemoveCallback\\)\\|witchConfig\\|ysTime\\(?:Delta\\)?\\)\\|T\\(?:a\\(?:ble\\(?:Lookup\\|Math\\|Shift\\)\\|g\\(?:Browse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|Debug\\(?:Form\\)?\\|Event\\(?:Format\\|Queue\\)\\|Get\\(?:Property\\|\\(?:Scal\\|Valu\\)e\\)\\|Info\\(?:Ex\\)?\\|R\\(?:DBReload\\|amp\\|e\\(?:ad\\(?:Ex\\)?\\|solve\\)\\)\\|S\\(?:caleStr\\|etOverride\\(?:Bad\\|Good\\|Quality\\|Uncertain\\)\\|ubscribe\\)\\|Un\\(?:\\(?:resolv\\|subscrib\\)e\\)\\|Write\\(?:EventQue\\|\\(?:Int\\|Real\\)Array\\)?\\)\\|n\\|sk\\(?:C\\(?:all\\|luster\\)\\|GetSignal\\|Hnd\\|Kill\\|New\\(?:Ex\\)?\\|Resume\\|S\\(?:etSignal\\|uspend\\)\\)\\)\\|est\\(?:\\(?:Random\\|S\\(?:aw\\|in\\|quare\\)\\|Triang\\)Wave\\)\\|ime\\(?:Current\\|Hour\\|In\\(?:fo\\|tToTimestamp\\)\\|Mi\\(?:dNight\\|n\\)\\|Se[ct]\\|To\\(?:OLEDate\\|Str\\)\\|UTCOffset\\|_CIREF\\|stamp\\(?:Add\\|C\\(?:reate\\|urrent\\)\\|Difference\\|Format\\|GetPart\\|Sub\\|To\\(?:Str\\|TimeInt\\)\\)\\)\\|oggle\\|r\\(?:aceMsg\\|end\\(?:DspCursor\\(?:Comment\\|Scale\\|T\\(?:ag\\|ime\\)\\|Value\\)\\|GetAn\\|PopUp\\|Run\\|Set\\(?:Date\\|S\\(?:cale\\|pan\\)\\|Time\\(?:base\\)?\\)\\|Win\\|Zoom\\)\\|n\\(?:AddHistory\\|Browse\\(?:Close\\|First\\|GetField\\|N\\(?:ext\\|umRecords\\)\\|Open\\|Prev\\)\\|C\\(?:lientInfo\\|omparePlot\\)\\|Del\\(?:History\\|ete\\)\\|E\\(?:cho\\|vent\\(?:GetTable\\(?:MS\\)?\\|SetTable\\(?:MS\\)?\\)\\|xport\\(?:C\\(?:SV\\|lip\\)\\|D\\(?:BF\\|DE\\)\\)\\)\\|Flush\\|Get\\(?:Buf\\(?:Event\\|\\(?:Tim\\|Valu\\)e\\)\\|C\\(?:luster\\|ursor\\(?:Event\\|MSTime\\|Pos\\|Time\\|Value\\(?:Str\\)?\\)\\)\\|D\\(?:\\(?:efScal\\|isplayMod\\)e\\)\\|Event\\|Format\\|GatedValue\\|InvalidValue\\|M\\(?:\\(?:STim\\|od\\)e\\)\\|Pe\\(?:n\\(?:Comment\\|Focus\\|No\\)?\\|riod\\)\\|S\\(?:cale\\(?:Str\\)?\\|pan\\)\\|T\\(?:\\(?:abl\\|im\\)e\\)\\|Units\\)\\|I\\(?:nfo\\|sValidValue\\)\\|New\\|P\\(?:\\(?:lo\\|rin\\)t\\)\\|S\\(?:amplesConfigured\\|croll\\|e\\(?:lect\\|t\\(?:Cursor\\(?:Pos\\)?\\|DisplayMode\\|Event\\|Pe\\(?:n\\(?:Focus\\)?\\|riod\\)\\|S\\(?:cale\\|pan\\)\\|T\\(?:\\(?:abl\\|im\\)e\\)\\)\\)\\)\\)\\)\\)\\|User\\(?:Create\\(?:ByRole\\|Form\\)?\\|Delete\\|EditForm\\|Info\\|Login\\|Password\\(?:ExpiryDays\\|Form\\)?\\|SetStr\\|UpdateRecord\\|Verify\\)\\|V\\(?:ariable\\(?:Quality\\|Timestamp\\)\\|er\\(?:ifyPrivilege\\(?:Form\\|TagWrite\\)\\|sion\\)\\)\\|W\\(?:hoAmI\\|in\\(?:Copy\\|F\\(?:ile\\|ree\\(?:Ex\\)?\\)\\|G\\(?:et\\(?:Clicked\\|F\\(?:irstChild\\|ocus\\)\\|N\\(?:ame\\|extChild\\)\\|Parent\\|WndHnd\\)\\|oto\\)\\|Mo\\(?:[dv]e\\)\\|N\\(?:e\\(?:w\\(?:\\(?:Pin\\)?At\\)?\\|xt\\)\\|umber\\)\\|P\\(?:os\\|r\\(?:ev\\|int\\(?:File\\)?\\)\\)\\|S\\(?:e\\(?:lect\\|tName\\)\\|\\(?:iz\\|tyl\\)e\\)\\|Title\\)\\|nd\\(?:Find\\|GetFileProfile\\|Help\\|Info\\|MonitorInfo\\(?:Ex\\)?\\|PutFileProfile\\|Show\\|Viewer\\)\\)\\|XML\\(?:C\\(?:\\(?:los\\|reat\\)e\\)\\|Get\\(?:Attribute\\(?:Count\\|\\(?:Nam\\|Valu\\)e\\)?\\|Child\\(?:Count\\)?\\|\\(?:Paren\\|Roo\\)t\\)\\|Node\\(?:AddChild\\|Find\\|\\(?:Get\\(?:Nam\\|Valu\\)\\|Remov\\|SetValu\\)e\\)\\|Open\\|S\\(?:\\(?:av\\|etAttribut\\)e\\)\\)\\|_Object\\(?:CallMethod\\|[GS]etProperty\\)\\|projectset\\)\\_>"  . font-lock-builtin-face)
 
                  ;; Function calls
@@ -108,7 +108,7 @@
           (found-indent nil)
           (line (thing-at-point 'line t))
           (case-line-p nil))
-      ;; Detect if we are on a CASE line
+      ;; Detect if on a CASE line
       (when (string-match-p "^[ \t]*CASE\\>" line)
         (setq case-line-p t))
       (forward-line 0)
@@ -230,6 +230,7 @@
 (add-to-list 'auto-mode-alist '("\\.ci\\'" . cicode-mode))
 
 
+(require 'cl-lib)
 (require 'json)
 (require 'ht)
 
@@ -239,7 +240,7 @@
 (defvar cicode-hash-table-completion nil
   "Completion hash table derived from JSON.")
 
-(cl-defstruct cicode-parameterstruct ParameterName ParameterDescription)
+(cl-defstruct cicode-parameterstruct ParameterName ParameterDescription ParameterDefault)
 
 (require 'cicode-mode-builtins)
 ;; Load JSON once
@@ -276,16 +277,21 @@ Set this to the width of the info popup you use (i.e. if you use corfu, set this
      json-table)
     tab))
 
+
+
 (defun cicode-mode-annotation (cand)
   "Return formatted signature for candidate CAND."
   (let* ((data (gethash cand cicode-hash-table-completion))
          (params (gethash "params" data))
          (paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
-         (return (gethash "returnType" data)))
+         (return (gethash "returnType" data))
+         (docstring (gethash "doc" data))
+         (formattedReturnDoc (if (not (string-empty-p return)) (format "→ %s: %s" return docstring) (format ": %s"docstring)))
+         )
     (when data
-      (format "(%s) → %s"
+      (format "(%s) %s"
               (mapconcat #'identity paramNames ", ")
-              return))))
+              formattedReturnDoc))))
 
 (defun cicode-mode-find-split-pos (strIn pos)
   "Find the postion/index to split the string on.
@@ -378,6 +384,14 @@ Respects existing newlines without reprinting the parameter name."
                 (setq line-len (+ line-len 1 (length w)))))
             ;; Append last line of this paragraph
             (setq result (concat result current-line "\n"))))
+        ;; Show default value on its own indented line if present
+        (when-let ((default (cicode-parameterstruct-ParameterDefault s)))
+          (let ((default-line (concat (make-string (+ max-name-len 3) ?\s)
+                                      (propertize "Default: "
+                                                  'face 'font-lock-doc-markup-face)
+                                      (propertize default
+                                                  'face 'font-lock-doc-face))))
+            (setq result (concat result default-line "\n"))))
         ;; Add a separator line after this parameter
         (setq result (concat result
                              (propertize (make-string max-width ?─)
@@ -393,21 +407,20 @@ Respects existing newlines without reprinting the parameter name."
                                    'face 'font-lock-keyword-face
                                    'face 'bold-italic))
          (returns (concat (propertize "Returns: " 'face 'font-lock-doc-markup-face)
-                          (propertize (cicode-mode-trim-docstring (gethash "returnType" data))
+                          (propertize (cicode-mode-trim-docstring (gethash "returnDesc" data))
                                       'face 'font-lock-doc-face)))
          (docstring (propertize (cicode-mode-trim-docstring (gethash "doc" data))
                                 'face 'font-lock-doc-face))
          (syntax (concat (propertize "Syntax: " 'face 'font-lock-doc-markup-face)
                          (cicode-fontify-string (gethash "syntax" data))))
          (params (gethash "params" data))
-         (paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
-         (paramDesc (mapcar (lambda (p) (gethash "paramdescription" p)) params))
-         (paramsListStruct (cl-mapcar
-                            (lambda (name desc)
-                              (make-cicode-parameterstruct
-                               :ParameterName name
-                               :ParameterDescription desc))
-                            paramNames paramDesc))
+         (paramsListStruct
+          (mapcar (lambda (p)
+                    (make-cicode-parameterstruct
+                     :ParameterName (gethash "paramname" p)
+                     :ParameterDescription (gethash "paramdescription" p)
+                     :ParameterDefault (gethash "paramdefault" p)))
+                  params))
          (paramsString (if paramsListStruct  (concat (propertize "Parameters:\n" 'face 'font-lock-doc-markup-face)
                                                      (cicode-mode-format-cicode-parameterstructs-with-indent
                                                       paramsListStruct)) "")))
@@ -473,30 +486,30 @@ Respects existing newlines without reprinting the parameter name."
 (defun cicode-mode-format-eldoc-full (name)
   "Display the information about NAME in eldoc."
   (let* ((data (gethash name cicode-hash-table-completion))
-         (functionName (propertize (gethash "name" data)
-                                   'face 'font-lock-keyword-face
-                                   'face 'bold-italic))
          (returns (concat (propertize "Returns: " 'face 'font-lock-doc-markup-face)
-                          (propertize  (gethash "returnType" data)
+                          (propertize  (gethash "returnDesc" data)
                                        'face 'font-lock-doc-face)))
          (docstring (propertize  (gethash "doc" data)
                                  'face 'font-lock-doc-face))
          (syntax (concat (propertize "Syntax: " 'face 'font-lock-doc-markup-face)
                          (cicode-fontify-string (gethash "syntax" data))))
          (params (gethash "params" data))
-         (paramNames (mapcar (lambda (p) (gethash "paramname" p)) params))
-         (paramDesc (mapcar (lambda (p) (gethash "paramdescription" p)) params))
-         (paramsListStruct (cl-mapcar
-                            (lambda (name desc)
-                              (make-cicode-parameterstruct
-                               :ParameterName name
-                               :ParameterDescription desc))
-                            paramNames paramDesc))
+         (paramsListStruct
+          (mapcar (lambda (p)
+                    (make-cicode-parameterstruct
+                     :ParameterName (gethash "paramname" p)
+                     :ParameterDescription (gethash "paramdescription" p)
+                     :ParameterDefault (gethash "paramdefault" p)))
+                  params))
          (paramsString (if paramsListStruct  (concat (propertize "Parameters:\n" 'face 'font-lock-doc-markup-face)
                                                      (cicode-mode-format-cicode-parameterstructs-with-indent
                                                       paramsListStruct)) ""))
-         (exampleString (concat (propertize "Example:\n" 'face 'font-lock-doc-markup-face)(cicode-fontify-string (gethash "example" data)))))
-    (format "%s\n%s\n%s\n%s\n%s\n"
+         (raw-example (gethash "example" data))
+         (exampleString (if (and raw-example (not (string-empty-p raw-example)))
+                            (concat (propertize "Example:\n" 'face 'font-lock-doc-markup-face)
+                                    (cicode-fontify-string raw-example))
+                          "")))
+    (format "%s\n%s\n%s\n%s\n%s"
             syntax docstring returns paramsString exampleString)))
 
 (defun cicode-mode-get-function-info (name)
@@ -574,56 +587,88 @@ Each param is a plist (:name :type :default)."
       input)))
 
 (defun cicode--insert-doc (info)
-  "Insert doxygen doc comment using INFO plist."
-  (insert "/**\n")
-  ;; (insert (format " * <summary functionName=\"%s\">\n" (plist-get info :name)))
+  "Insert doxygen doc comment using INFO plist.
+Collects all user input before inserting, so the buffer is never
+left with an unclosed comment block."
+  ;; Gather input up front
+  (let* ((brief (cicode--read-string-or-default
+                 "Function summary: " "TODO: summary"))
+         (param-descs
+          (mapcar (lambda (p)
+                    (cons (plist-get p :name)
+                          (cicode--read-string-or-default
+                           (format "Description of %s: " (plist-get p :name))
+                           "TODO: parameter description")))
+                  (plist-get info :params)))
+         (ret-desc (unless (string= (plist-get info :rtype) "VOID")
+                     (cicode--read-string-or-default
+                      "Description of return: " "TODO: Return description"))))
+    ;; Insert the complete block
+    (insert "/**\n")
+    (insert (format " * @brief %s\n" brief))
+    (insert " * \n")
+    (dolist (pd param-descs)
+      (insert (format " * @param %s %s\n" (car pd) (cdr pd))))
+    (when param-descs
+      (insert " * \n"))
+    (if ret-desc
+        (progn
+          (insert (format " * @return %s \n" ret-desc))
+          (insert " */\n"))
+      (insert " */\n"))))
 
-  (insert (format  " * @brief %s\n" (cicode--read-string-or-default  "Function summary: " "TODO: summary")))
-  ;; (insert " * </summary>\n")
-  (insert " * \n")
-  (dolist (p (plist-get info :params))
-    (insert
-     (format
-      ;; " * <param name=\"%s\" type=\"%s\"%s>TODO</param>\n"
-      " * @param %s %s\n"
-      (plist-get p :name)
-      (cicode--read-string-or-default  (format "Description of %s: " (plist-get p :name) ) "TODO: parameter description")
-      ;; (plist-get p :type)
-      ;; (if-let ((d (plist-get p :default)))
-      ;;     (format " defaultValue='%s'" d)
-      ;;   ""))))
-      )))
-  (insert " * \n")
-  (if (string= (plist-get info :rtype) "VOID")(insert " */\n")
-    (insert
-     (format
-      ;; " * <returns returnType=\"%s\" scope=\"%s\">TODO</returns>\n"
-      " * @return %s \n"
-      (cicode--read-string-or-default  "Description of return: " "TODO: Return description")
-      ;; (plist-get info :rtype)
-      ;; (plist-get info :scope)))
-      ))
-    (insert " */\n")))
+(defun cicode--on-variable-line-p ()
+  "Return non-nil if current line is a GLOBAL/MODULE variable declaration."
+  (let ((case-fold-search t))
+    (save-excursion
+      (beginning-of-line)
+      (looking-at-p
+       (concat "^[ \t]*\\(?:GLOBAL\\|MODULE\\)[ \t]+"
+               "\\(?:INT\\|STRING\\|FLOAT\\|REAL\\|BOOL\\|LONG"
+               "\\|OBJECT\\|TIMESTAMP\\|QUALITY\\)[ \t]+\\w+")))))
+
+(defun cicode--has-trailing-doc-p ()
+  "Return non-nil if current line already has a /**< ... */ comment."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p ".*\\/\\*\\*<.*\\*\\/")))
+
+(defun cicode--insert-var-doc ()
+  "Insert a trailing /**< ... */ doc comment on the current variable line."
+  (let ((desc (cicode--read-string-or-default
+               "Variable description: " "TODO: description")))
+    (end-of-line)
+    (insert (format " /**< %s*/" desc))))
 
 ;;;###autoload
 (defun cicode-doc-generate ()
-  "Insert starred XML doc comment for the Cicode function at point.
-Does nothing if the line above is not empty."
+  "Insert a doxygen doc comment for the Cicode construct at point.
+For FUNCTION lines, inserts a /** ... */ block above.
+For GLOBAL/MODULE variable lines, appends a /**< ... */ trailing comment."
   (interactive)
   (save-excursion
-    ;; Anchor on FUNCTION line
-    (re-search-backward "^\\s-*.*\\bFUNCTION\\b")
-    (beginning-of-line)
-    (unless (cicode--line-empty-p)
-      (user-error "Docstring already exists"))
-    (cicode--insert-doc
-     (cicode--parse-function-line))))
+    (cond
+     ;; Variable declaration at point
+     ((cicode--on-variable-line-p)
+      (when (cicode--has-trailing-doc-p)
+        (user-error "Docstring already exists"))
+      (cicode--insert-var-doc))
+     ;; Function: search backward
+     (t
+      (re-search-backward "^\\s-*.*\\bFUNCTION\\b")
+      (beginning-of-line)
+      (unless (cicode--line-empty-p)
+        (user-error "Docstring already exists"))
+      (cicode--insert-doc
+       (cicode--parse-function-line))))))
 
 
 
 ;; HERE: Used to create regex from hashtable
 ;; (defun cicode-mode-get-builtin-functions ()
 ;;   (regexp-opt (ht-map (lambda (key value) (gethash "name" value)) cicode-hash-table-completion) 'symbols))
+
+(require 'cicode-mode-project)
 
 (provide 'cicode-mode)
 ;;; cicode-mode.el ends here
