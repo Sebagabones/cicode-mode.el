@@ -89,13 +89,19 @@ of functions changes, which invalidates the reference index.")
 
 (defun cicode-project--find-ci-files (root)
   "Return all .ci files under ROOT."
-  (directory-files-recursively root "\\.ci\\'"))
+  (condition-case nil
+      (directory-files-recursively root "\\.ci\\'" nil
+                                   (lambda (dir)
+                                     (file-accessible-directory-p dir)))
+    (error nil)))
 
 (defun cicode-project--hash-file (file)
-  "Return MD5 hash of FILE contents."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (md5 (buffer-string))))
+  "Return MD5 hash of FILE contents, or nil if unreadable."
+  (condition-case nil
+      (with-temp-buffer
+        (insert-file-contents file)
+        (md5 (buffer-string)))
+    (error nil)))
 
 ;;;; Doxygen comment parser ===================================================
 
@@ -696,29 +702,32 @@ With prefix arg FORCE, ignore the cache entirely."
     (clrhash cicode-project--file-hashes)
     ;; Process each file
     (dolist (file files)
-      (let* ((hash       (cicode-project--hash-file file))
-             (cf         (when cf-table (gethash file cf-table)))
-             (cached-hash (when cf (gethash "hash" cf))))
-        (puthash file hash cicode-project--file-hashes)
-        (if (and cf (equal hash cached-hash))
-            ;; --- from cache ---
-            (let ((funcs (gethash "functions" cf))
-                  names)
-              (dotimes (i (length funcs))
-                (let* ((entry (cicode-project--fill-cached-entry
-                               (aref funcs i) file))
-                       (name  (gethash "name" entry)))
-                  (puthash name entry cicode-hash-table-completion)
-                  (cl-pushnew name cicode-project--all-names :test #'string=)
-                  (push name names)
-                  (cl-incf n-funcs)))
-              (puthash file names cicode-project--file-functions)
-              (cl-incf n-cache))
-          ;; --- fresh scan ---
-          (let ((entries (cicode-project--scan-file file)))
-            (cicode-project--inject-file file entries)
-            (cl-incf n-funcs (length entries))
-            (cl-incf n-scan)))))
+      (let ((hash (cicode-project--hash-file file)))
+        (when hash ; skip unreadable files
+          (let* ((cf         (when cf-table (gethash file cf-table)))
+                 (cached-hash (when cf (gethash "hash" cf))))
+            (puthash file hash cicode-project--file-hashes)
+            (if (and cf (equal hash cached-hash))
+                ;; --- from cache ---
+                (let ((funcs (gethash "functions" cf))
+                      names)
+                  (dotimes (i (length funcs))
+                    (let* ((entry (cicode-project--fill-cached-entry
+                                   (aref funcs i) file))
+                           (name  (gethash "name" entry)))
+                      (puthash name entry cicode-hash-table-completion)
+                      (cl-pushnew name cicode-project--all-names :test #'string=)
+                      (push name names)
+                      (cl-incf n-funcs)))
+                  (puthash file names cicode-project--file-functions)
+                  (cl-incf n-cache))
+              ;; --- fresh scan ---
+              (condition-case nil
+                  (let ((entries (cicode-project--scan-file file)))
+                    (cicode-project--inject-file file entries)
+                    (cl-incf n-funcs (length entries))
+                    (cl-incf n-scan))
+                (error nil)))))))
     ;; Build reference index (uses rg if available, cache-aware)
     (message "Cicode: building reference index...")
     (cicode-project--build-references root files cache)
