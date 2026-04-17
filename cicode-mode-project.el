@@ -439,7 +439,7 @@ Returns list of (CANONICAL-NAME LINE COL TEXT)."
               (push (list canon
                           (line-number-at-pos (match-beginning 0))
                           (- (match-beginning 0) (line-beginning-position))
-                          (string-trim (thing-at-point 'line t)))
+                          (string-trim (or (thing-at-point 'line t) "")))
                     refs))))))
     (nreverse refs)))
 
@@ -473,9 +473,11 @@ Returns a hash-table: file -> list of (CANONICAL-NAME LINE COL TEXT)."
                       (let* ((data     (gethash "data" json))
                              (file     (gethash "text" (gethash "path" data)))
                              (line-num (gethash "line_number" data))
+                             (lines-obj (gethash "lines" data))
                              (line-txt (string-trim
-                                        (gethash "text"
-                                                 (gethash "lines" data))))
+                                        (or (and lines-obj
+                                                 (gethash "text" lines-obj))
+                                            "")))
                              (subs     (gethash "submatches" data)))
                         (dotimes (i (length subs))
                           (let* ((sm    (aref subs i))
@@ -546,9 +548,11 @@ Uses CACHE data when file hashes and function names haven't changed."
         ;; Elisp fallback
         (let ((names-re (regexp-opt cicode-project--all-names 'words)))
           (dolist (file changed-files)
-            (puthash file
-                     (cicode-project--scan-file-refs file names-re canonical)
-                     file-tuples)))))
+            (condition-case nil
+                (puthash file
+                         (cicode-project--scan-file-refs file names-re canonical)
+                         file-tuples)
+              (error nil))))))
     ;; Build lookup tables
     (cicode-project--build-refs-from-tuples file-tuples)))
 
@@ -819,7 +823,7 @@ a live search for builtins or unknown names."
             (while (re-search-forward re nil t)
               (let ((ln  (line-number-at-pos))
                     (col (- (match-beginning 0) (line-beginning-position)))
-                    (txt (string-trim (thing-at-point 'line t))))
+                    (txt (string-trim (or (thing-at-point 'line t) ""))))
                 (push (xref-make txt (xref-make-file-location file ln col))
                       results)))))
         (nreverse results)))))
