@@ -1,4 +1,4 @@
-;;; cicode-mode-project.el --- Project indexing for cicode-mode -*- lexical-binding: t; -*-
+;;; cicode-mode-project.el --- Project indexing for cicode-mode
 
 ;; Copyright (C) 2025 Sebastian Gazey
 
@@ -24,7 +24,7 @@
 (require 'subr-x)
 (require 'xref)
 
-;; Forward declarations -- cicode-mode.el owns these
+;; Forward declarations
 (defvar cicode-hash-table-completion)
 (declare-function cicode-mode-load-functions "cicode-mode")
 
