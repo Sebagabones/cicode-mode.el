@@ -88,12 +88,24 @@ of functions changes, which invalidates the reference index.")
 ;;;; Utilities ================================================================
 
 (defun cicode-project--find-ci-files (root)
-  "Return all .ci files under ROOT."
+  "Return all .ci files under ROOT, skipping unreadable directories."
+  (nreverse (cicode-project--find-ci-files-1 (expand-file-name root) nil)))
+
+(defun cicode-project--find-ci-files-1 (dir acc)
+  "Collect .ci files under DIR into ACC, skipping unreadable directories."
   (condition-case nil
-      (directory-files-recursively root "\\.ci\\'" nil
-                                   (lambda (dir)
-                                     (file-accessible-directory-p dir)))
-    (error nil)))
+      (let ((entries (directory-files dir t nil t)))
+        (dolist (entry entries)
+          (let ((name (file-name-nondirectory entry)))
+            (unless (member name '("." ".."))
+              (cond
+               ((and (not (file-directory-p entry))
+                     (string-match-p "\\.ci\\'" name))
+                (push entry acc))
+               ((file-directory-p entry)
+                (setq acc (cicode-project--find-ci-files-1 entry acc)))))))
+        acc)
+    (error acc)))
 
 (defun cicode-project--hash-file (file)
   "Return MD5 hash of FILE contents, or nil if unreadable."
