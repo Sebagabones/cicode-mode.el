@@ -117,6 +117,25 @@ of functions changes, which invalidates the reference index.")
 
 ;;;; Doxygen comment parser ===================================================
 
+(defun cicode-project--parse-comment-above ()
+  "Parse a // comment above point.
+Return nil if // comment not directly above point."
+  (save-excursion
+    (forward-line -1)
+    (let (brief)
+      (let* ((raw (string-trim (thing-at-point 'line t)))
+             ;; Strip leading " * "
+             (line (if (string-match "^\\*[ \t]?" raw)
+                       (substring raw (match-end 0))
+                     raw)))
+        (cond
+         ((string-match "^[ \t]*//\\(.*\\)" line)
+          (setq brief (string-trim (match-string 1 line))
+                )
+
+          (list :brief (or brief "")))))
+      )))
+
 (defun cicode-project--parse-doxygen-above ()
   "Parse the /** ... */ doxygen block above point.
 Returns plist (:brief :params :return :example :name) or nil.
@@ -391,7 +410,8 @@ Return list of hash-table entries."
           (let* ((ln   (line-number-at-pos))
                  (text (thing-at-point 'line t))
                  (func (cicode-project--parse-function-line text))
-                 (doc  (cicode-project--parse-doxygen-above)))
+                 (doxygen-doc (cicode-project--parse-doxygen-above))
+                 (doc (if (not doxygen-doc) (cicode-project--parse-comment-above) doxygen-doc)))
             (when func
               (push (cicode-project--make-entry func doc file ln) entries)))
           (forward-line 1))
