@@ -37,7 +37,7 @@ END
  *
  * @param BoatName Name of the boat to validate
  *
- * @return 1 if valid GC name, otherwise 0
+ * @return 1 if valid CG name, otherwise 0
  */
 PRIVATE INT FUNCTION CheckCGBoatName(STRING BoatName)
     // Coast Guard boat names /must/ start with "CG_"

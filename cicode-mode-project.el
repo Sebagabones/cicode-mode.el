@@ -225,6 +225,7 @@ FILE: source path.  LINE-NUM: 1-based line number."
     (puthash "name"       name ht)
     (puthash "doc"        (or doc "") ht)
     (puthash "returnType" vtype ht)
+    (puthash "returnDesc" vtype ht)
     (puthash "syntax"     (format "%s %s %s" scope vtype name) ht)
     (puthash "example"    "" ht)
     (puthash "file"       file ht)
@@ -664,7 +665,7 @@ Returns the entry hash-table or nil."
          (message "Cicode: cache file corrupt, will re-scan")
          nil)))))
 
-(defun cicode-project--hydrate-cached-entry (entry file)
+(defun cicode-project--fill-cached-entry (entry file)
   "Make a cached ENTRY (from json-parse) usable, injecting FILE path.
 Converts param vectors to lists so `mapcar' is consistent."
   (puthash "file" file entry)
@@ -704,7 +705,7 @@ With prefix arg FORCE, ignore the cache entirely."
             (let ((funcs (gethash "functions" cf))
                   names)
               (dotimes (i (length funcs))
-                (let* ((entry (cicode-project--hydrate-cached-entry
+                (let* ((entry (cicode-project--fill-cached-entry
                                (aref funcs i) file))
                        (name  (gethash "name" entry)))
                   (puthash name entry cicode-hash-table-completion)
@@ -816,6 +817,66 @@ a live search for builtins or unknown names."
     ("Variable" ,"^[ \t]*\\(?:GLOBAL\\|MODULE\\)[ \t]+\\(?:INT\\|STRING\\|FLOAT\\|REAL\\|BOOL\\|LONG\\|OBJECT\\|TIMESTAMP\\|QUALITY\\)[ \t]+\\(\\w+\\)" 1))
   "Imenu generic expression for Cicode definitions.")
 
+;;;; Cache-only loading (no scan) =============================================
+
+(defun cicode-project-load-cache ()
+  "Load the cache file into the completion table without scanning.
+Called automatically on first open to provide immediate completions."
+  (interactive)
+  (let ((cache (cicode-project--load-cache)))
+    (when (and cache (gethash "files" cache))
+      (cicode-mode-load-functions)
+      ;; Wipe previous project entries
+      (dolist (name cicode-project--all-names)
+        (remhash name cicode-hash-table-completion))
+      (setq cicode-project--all-names nil)
+      (clrhash cicode-project--file-functions)
+      (clrhash cicode-project--file-hashes)
+      ;; fill from cache
+      (let ((cf-table (gethash "files" cache))
+            (n-funcs 0))
+        (maphash
+         (lambda (file cf)
+           (let ((hash  (gethash "hash" cf))
+                 (funcs (gethash "functions" cf))
+                 names)
+             (puthash file hash cicode-project--file-hashes)
+             (dotimes (i (length funcs))
+               (let* ((entry (cicode-project--fill-cached-entry
+                              (aref funcs i) file))
+                      (name  (gethash "name" entry)))
+                 (puthash name entry cicode-hash-table-completion)
+                 (cl-pushnew name cicode-project--all-names :test #'string=)
+                 (push name names)
+                 (cl-incf n-funcs)))
+             (puthash file names cicode-project--file-functions)))
+         cf-table)
+        ;; Restore references
+        (let ((names-hash (gethash "names_hash" cache)))
+          (when names-hash
+            (setq cicode-project--names-hash names-hash))
+          (clrhash cicode-project--references)
+          (clrhash cicode-project--file-references)
+          (maphash
+           (lambda (file cf)
+             (when-let ((raw-refs (gethash "references" cf)))
+               (let ((tuples (mapcar (lambda (r)
+                                       (list (gethash "name" r)
+                                             (gethash "line" r)
+                                             (gethash "col" r)
+                                             (gethash "text" r)))
+                                     (append raw-refs nil))))
+                 (puthash file tuples cicode-project--file-references)
+                 (dolist (tup tuples)
+                   (push (list :file file
+                               :line (nth 1 tup)
+                               :col  (nth 2 tup)
+                               :text (nth 3 tup))
+                         (gethash (downcase (nth 0 tup))
+                                  cicode-project--references))))))
+           cf-table))
+        (message "Cicode: loaded %d functions from cache" n-funcs)))))
+
 ;;;; Mode hook setup ==========================================================
 
 (defun cicode-project--setup ()
@@ -827,6 +888,10 @@ a live search for builtins or unknown names."
   (add-hook 'xref-backend-functions #'cicode-project--xref-backend -90 t)
   ;; Re-scan current file on save
   (add-hook 'after-save-hook #'cicode-project-rescan-buffer nil t)
+  ;; Load cache on first open if available
+  (when (and (null cicode-project--all-names)
+             (file-exists-p (cicode-project--cache-path)))
+    (cicode-project-load-cache))
   ;; Optional: scan whole project on first open
   (when (and cicode-project-scan-on-open
              (null cicode-project--all-names))
