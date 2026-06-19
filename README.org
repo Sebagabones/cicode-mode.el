@@ -10,7 +10,7 @@ Using =use-package=:
 (use-package cicode-mode
   :straight (cicode-mode :type git :host github :repo "Sebagabones/cicode-mode.el")
   :ensure t
-  :setq
+  :custom
   (modify-coding-system-alist 'file "\\.ci\\'" 'utf-8-dos) ;While this is not strictly necessary,
   ;; I have found that if you are using emacs through WSL to edit files on Windows, the Citect compiler expects windows-style encoding on files
   )
