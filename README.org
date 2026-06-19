@@ -9,7 +9,11 @@ Using =use-package=:
 #+begin_src elisp
 (use-package cicode-mode
   :straight (cicode-mode :type git :host github :repo "Sebagabones/cicode-mode.el")
-  :ensure t  )
+  :ensure t
+  :setq
+  (modify-coding-system-alist 'file "\\.ci\\'" 'utf-8-dos) ;While this is not strictly necessary,
+  ;; I have found that if you are using emacs through WSL to edit files on Windows, the Citect compiler expects windows-style encoding on files
+  )
 #+end_src
 
 You will probably want to edit/set the variable ~cicode-mode-max-docstring-width~ (and possibly ~cicode-mode-max-docstring-length~), as these dictate the length of the description in the completion popup (some of the explanations are very large).
