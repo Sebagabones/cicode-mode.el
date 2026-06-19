@@ -4,7 +4,7 @@
 ;; URL: https://github.com/Sebagabones/cicode-mode
 ;; Created: 2025
 ;; Version: 0.2
-;; Package-Requires: ((emacs "24.3") (ht "v2.3")
+;; Package-Requires: ((emacs "24.3") (ht "v2.3"))
 ;; Keywords: languages cicode citect plant-scada aveva
 
 ;; This file is NOT part of GNU Emacs.
