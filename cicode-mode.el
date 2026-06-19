@@ -232,7 +232,7 @@
 
 (require 'cl-lib)
 (require 'json)
-(require 'ht)
+;(require 'ht) ;;NOTE: Required for rebuilding function list
 
 (defvar cicode-mode-json-functions-in nil
   "Loaded hash table of builtin functions from JSON.")
